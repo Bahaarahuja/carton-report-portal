@@ -1,0 +1,496 @@
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+  background: #f3f5f2;
+
+  --green: #1f6d46;
+  --green-dark: #173d2a;
+  --green-soft: #e4f3da;
+
+  --header-green: #dcefd6;
+
+  --move-1: #fff3bf;
+  --move-2: #dceeff;
+  --move-3: #ead8c6;
+  --move-4: #eadff5;
+  --move-5: #ffe1ce;
+  --move-6: #dcefe9;
+
+  --line: #1e1e1e;
+  --light-line: #c9c9c9;
+
+  --yellow: #fff4c7;
+  --yellow-border: #d5b43c;
+
+  --red-soft: #ffe0e0;
+  --red-border: #c62828;
+  --red-text: #9b111e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-weight: 400;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  padding:
+    28px
+    max(24px, calc((100vw - 1240px) / 2));
+
+  background: var(--green-dark);
+  color: white;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+header p {
+  margin: 6px 0 0;
+  color: #e8f0ea;
+  font-weight: 700;
+}
+
+.local-badge {
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+main {
+  max-width: 1240px;
+  margin: 28px auto;
+  padding: 0 18px;
+}
+
+.card {
+  background: white;
+  border: 2px solid #d6ddd8;
+  border-radius: 14px;
+  padding: 24px;
+
+  box-shadow:
+    0 8px 24px
+    rgba(24, 43, 31, 0.07);
+
+  margin-bottom: 22px;
+}
+
+.upload-card {
+  display: flex;
+  gap: 16px;
+}
+
+.step {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  background: var(--green);
+  color: white;
+
+  display: grid;
+  place-items: center;
+
+  font-weight: 900;
+  flex: 0 0 auto;
+}
+
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+h2 {
+  margin: 0 0 7px;
+  font-weight: 900;
+}
+
+.muted {
+  color: #58635c;
+  font-weight: 700;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 14px;
+  align-items: end;
+  margin-top: 20px;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+input,
+select {
+  width: 100%;
+  border: 2px solid #aeb9b1;
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: white;
+  font: inherit;
+  font-weight: 700;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 17px;
+  font-family: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.primary {
+  background: var(--green);
+  color: white;
+}
+
+.secondary {
+  background: #e8efe9;
+  color: #174f34;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.preview-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  font-weight: 900;
+  color: var(--green);
+}
+
+.report-date {
+  margin: 8px 0 3px;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.warning {
+  background: var(--yellow);
+  border: 2px solid var(--yellow-border);
+  padding: 11px 14px;
+  border-radius: 8px;
+  margin: 12px 0;
+  color: #55450d;
+  font-weight: 900;
+}
+
+.error {
+  background: #fdeaea;
+  color: #8d2424;
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-top: 14px;
+  font-weight: 900;
+}
+
+.table-wrap {
+  overflow: auto;
+  max-height: 720px;
+  border: 2px solid var(--line);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+th,
+td {
+  border: 1px solid var(--light-line);
+  padding: 5px 7px;
+  text-align: left;
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+/*
+  Default header color for every report type.
+*/
+th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  background: var(--header-green);
+
+  font-weight: 900;
+  text-align: center;
+  font-size: 13px;
+}
+
+/*
+  Carton Movement column-group colors.
+*/
+th.move-group-1,
+td.move-group-1 {
+  background: var(--move-1);
+}
+
+th.move-group-2,
+td.move-group-2 {
+  background: var(--move-2);
+}
+
+th.move-group-3,
+td.move-group-3 {
+  background: var(--move-3);
+}
+
+th.move-group-4,
+td.move-group-4 {
+  background: var(--move-4);
+}
+
+th.move-group-5,
+td.move-group-5 {
+  background: var(--move-5);
+}
+
+th.move-group-6,
+td.move-group-6 {
+  background: var(--move-6);
+}
+
+/*
+  Body colors should remain lighter than the header,
+  so the text stays easy to read.
+*/
+td.move-group-1 {
+  background: #fff9df;
+}
+
+td.move-group-2 {
+  background: #edf6ff;
+}
+
+td.move-group-3 {
+  background: #f4eade;
+}
+
+td.move-group-4 {
+  background: #f4eef9;
+}
+
+td.move-group-5 {
+  background: #fff0e6;
+}
+
+td.move-group-6 {
+  background: #edf7f4;
+}
+
+.book-cell-first {
+  font-weight: 900;
+}
+
+/*
+  Light-grey internal row lines.
+
+  Black outer boundary around every BAV Code group.
+*/
+.report-group tr:first-child td {
+  border-top: 2px solid #111;
+}
+
+.report-group tr:last-child td {
+  border-bottom: 2px solid #111;
+}
+
+.report-group td:first-child {
+  border-left: 2px solid #111;
+}
+
+.report-group td:last-child {
+  border-right: 2px solid #111;
+}
+
+.group-count-row td {
+  height: 23px;
+  padding: 2px 7px;
+  background: #fff;
+}
+
+.group-count-row td.group-count {
+  background: var(--green-soft);
+  font-weight: 900;
+  text-align: center;
+  font-size: 14px;
+}
+
+/*
+  Carton Movements may have many movement columns,
+  so this table can scroll horizontally.
+*/
+.movement-report-table {
+  width: max-content;
+  min-width: 100%;
+}
+
+.movement-report-table th,
+.movement-report-table td {
+  min-width: 105px;
+  max-width: 190px;
+  white-space: normal;
+  vertical-align: top;
+}
+
+.movement-report-table th:nth-child(1),
+.movement-report-table td:nth-child(1) {
+  min-width: 170px;
+}
+
+.movement-report-table th:nth-child(2),
+.movement-report-table td:nth-child(2) {
+  min-width: 170px;
+}
+
+.movement-report-table th:nth-child(3),
+.movement-report-table td:nth-child(3) {
+  min-width: 135px;
+}
+
+.movement-report-table th:nth-child(4),
+.movement-report-table td:nth-child(4) {
+  min-width: 85px;
+  text-align: center;
+}
+
+/*
+  Validation styling overrides movement-group colors.
+*/
+.invalid-scanout-row td {
+  background: var(--red-soft) !important;
+  border-top-color: #e5a3a3;
+  border-bottom-color: #e5a3a3;
+}
+
+.invalid-scanout-row td:first-child {
+  border-left: 4px solid var(--red-border);
+}
+
+.invalid-scanout-row .validation-cell {
+  color: var(--red-text);
+  font-weight: 900;
+}
+
+.empty-cell {
+  color: #7d857f;
+}
+
+footer {
+  text-align: center;
+  color: #5f6d64;
+  padding: 20px 0 35px;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  header {
+    align-items: flex-start;
+  }
+
+  .local-badge {
+    display: none;
+  }
+
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-head {
+    display: block;
+  }
+
+  .actions {
+    margin-top: 15px;
+  }
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 10mm;
+  }
+
+  body {
+    background: white;
+  }
+
+  header,
+  .upload-card,
+  footer,
+  .actions,
+  #warnings {
+    display: none !important;
+  }
+
+  main {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 0;
+    padding: 0;
+  }
+
+  .table-wrap {
+    max-height: none;
+    overflow: visible;
+    border: 0;
+  }
+
+  th {
+    position: static;
+  }
+
+  .preview-head {
+    margin-bottom: 10px;
+  }
+}

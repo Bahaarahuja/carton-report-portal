@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Carton Report Portal</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Carton Report Portal</h1>
+      <p>Upload a CSV or Excel file, preview the complete report, and download it as a PDF.</p>
+    </div>
+    <span class="local-badge">Report Builder</span>
+  </header>
+
+  <main>
+    <section class="card upload-card">
+      <div class="step">1</div>
+      <div class="grow">
+        <h2>Create Report</h2>
+
+        <form id="uploadForm">
+          <label>
+            Report Type
+            <select id="reportType" required>
+              <option value="">Choose a report…</option>
+              <option value="cartons_consumed">Cartons Consumed</option>
+              <option value="cartons_created">Cartons Created</option>
+              <option value="challan_movement">Challan Movement</option>
+              <option value="carton_movements">Carton Movements</option>
+            </select>
+          </label>
+
+          <label>
+            CSV or Excel File
+            <input id="fileInput" type="file" accept=".csv,.xlsx,.xls" required />
+          </label>
+
+          <button type="submit" class="primary">Validate & Preview</button>
+        </form>
+        <div id="message" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="previewSection" class="card hidden">
+      <div class="preview-head">
+        <div>
+          <span class="eyebrow">REPORT PREVIEW</span>
+          <h2 id="previewTitle"></h2>
+          <p id="reportDate" class="report-date"></p>
+          <p id="previewMeta" class="muted"></p>
+        </div>
+        <div class="actions">
+          <button id="printBtn" class="secondary">Print Preview</button>
+          <button id="pdfBtn" class="primary">Download PDF</button>
+        </div>
+      </div>
+
+      <div id="warnings"></div>
+      <div id="reportPanel" class="table-wrap"></div>
+    </section>
+  </main>
+
+  <footer>Carton Report Portal</footer>
+  <script src="app.js"></script>
+</body>
+</html>
