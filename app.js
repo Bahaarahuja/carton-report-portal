@@ -262,43 +262,21 @@
       .trim();
   }
 
-  /*
-    Extracts the final number from a QR Code or Carton No.
-
-    Examples:
-
-    BAV-HI06400103-C0228 → 228
-    BAV-EN22000105-C0007 → 7
-    CARTON-19 → 19
-  */
   function getCartonEndingNumber(value) {
     const text = String(value ?? '').trim();
-
     const match = text.match(/(\d+)\D*$/);
 
     if (!match) {
       return null;
     }
 
-    const number = Number.parseInt(
-      match[1],
-      10
-    );
+    const number = Number.parseInt(match[1], 10);
 
     return Number.isFinite(number)
       ? number
       : null;
   }
 
-  /*
-    Sort order:
-
-    1. Compare the nonnumeric prefix.
-    2. Compare the final carton number numerically.
-    3. Fall back to a normal numeric-aware comparison.
-
-    This prevents C0228 from appearing before C0224.
-  */
   function compareCartonCodes(leftValue, rightValue) {
     const left = String(leftValue ?? '').trim();
     const right = String(rightValue ?? '').trim();
@@ -351,20 +329,6 @@
       return leftNumber - rightNumber;
     }
 
-    if (
-      leftNumber !== null &&
-      rightNumber === null
-    ) {
-      return -1;
-    }
-
-    if (
-      leftNumber === null &&
-      rightNumber !== null
-    ) {
-      return 1;
-    }
-
     return left.localeCompare(
       right,
       undefined,
@@ -382,11 +346,7 @@
       return 0;
     }
 
-    if (
-      !state.unknownStatusClasses.has(
-        normalized
-      )
-    ) {
+    if (!state.unknownStatusClasses.has(normalized)) {
       const nextIndex =
         state.unknownStatusClasses.size %
         PDF_STATUS_EXTRA_COLORS.length;
@@ -483,47 +443,25 @@
   }
 
   function getMoveColorIndex(index) {
-    return (
-      index %
-      PDF_MOVE_TEXT_COLORS.length
-    );
+    return index % PDF_MOVE_TEXT_COLORS.length;
   }
 
   function levenshtein(a, b) {
     const matrix = Array.from(
-      {
-        length: a.length + 1
-      },
-      () =>
-        Array(b.length + 1).fill(0)
+      { length: a.length + 1 },
+      () => Array(b.length + 1).fill(0)
     );
 
-    for (
-      let i = 0;
-      i <= a.length;
-      i += 1
-    ) {
+    for (let i = 0; i <= a.length; i += 1) {
       matrix[i][0] = i;
     }
 
-    for (
-      let j = 0;
-      j <= b.length;
-      j += 1
-    ) {
+    for (let j = 0; j <= b.length; j += 1) {
       matrix[0][j] = j;
     }
 
-    for (
-      let i = 1;
-      i <= a.length;
-      i += 1
-    ) {
-      for (
-        let j = 1;
-        j <= b.length;
-        j += 1
-      ) {
+    for (let i = 1; i <= a.length; i += 1) {
+      for (let j = 1; j <= b.length; j += 1) {
         matrix[i][j] = Math.min(
           matrix[i - 1][j] + 1,
           matrix[i][j - 1] + 1,
@@ -619,13 +557,8 @@
     );
   }
 
-  function canonicalHeader(
-    header,
-    definition
-  ) {
-    const trimmed = String(
-      header ?? ''
-    ).trim();
+  function canonicalHeader(header, definition) {
+    const trimmed = String(header ?? '').trim();
 
     if (definition.aliases[trimmed]) {
       return definition.aliases[trimmed];
@@ -634,9 +567,7 @@
     const known = [
       ...definition.required,
       ...definition.columns,
-      ...Object.keys(
-        definition.aliases
-      )
+      ...Object.keys(definition.aliases)
     ];
 
     const exactKnown = known.find(
@@ -656,10 +587,7 @@
   }
 
   function parseDate(value) {
-    if (
-      value == null ||
-      value === ''
-    ) {
+    if (value == null || value === '') {
       return null;
     }
 
@@ -695,11 +623,7 @@
       text.replace(',', ' ')
     );
 
-    if (
-      !Number.isNaN(
-        normalDate.getTime()
-      )
-    ) {
+    if (!Number.isNaN(normalDate.getTime())) {
       return normalDate;
     }
 
@@ -757,9 +681,7 @@
       Number(second)
     );
 
-    return Number.isNaN(
-      parsed.getTime()
-    )
+    return Number.isNaN(parsed.getTime())
       ? null
       : parsed;
   }
@@ -773,12 +695,8 @@
 
     return [
       date.getFullYear(),
-      String(
-        date.getMonth() + 1
-      ).padStart(2, '0'),
-      String(
-        date.getDate()
-      ).padStart(2, '0')
+      String(date.getMonth() + 1).padStart(2, '0'),
+      String(date.getDate()).padStart(2, '0')
     ].join('-');
   }
 
@@ -787,16 +705,9 @@
       return '';
     }
 
-    if (
-      /^\d{4}-\d{2}-\d{2}$/.test(
-        String(value)
-      )
-    ) {
-      const [
-        year,
-        month,
-        day
-      ] = String(value).split('-');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(String(value))) {
+      const [year, month, day] =
+        String(value).split('-');
 
       return `${day}/${month}/${year}`;
     }
@@ -838,10 +749,7 @@
     ).format(date);
   }
 
-  function formatCell(
-    value,
-    column
-  ) {
+  function formatCell(value, column) {
     if (isBlank(value)) {
       return '';
     }
@@ -859,45 +767,34 @@
     return String(value);
   }
 
-  function normalizeRows(
-    rawRows,
-    definition
-  ) {
+  function normalizeRows(rawRows, definition) {
     return rawRows
       .map((rawRow) => {
         const normalizedRow = {};
 
-        Object.entries(rawRow)
-          .forEach(
-            ([header, value]) => {
-              normalizedRow[
-                canonicalHeader(
-                  header,
-                  definition
-                )
-              ] = value;
-            }
-          );
+        Object.entries(rawRow).forEach(
+          ([header, value]) => {
+            normalizedRow[
+              canonicalHeader(
+                header,
+                definition
+              )
+            ] = value;
+          }
+        );
 
         return normalizedRow;
       })
       .filter((row) =>
         Object.values(row).some(
-          (value) =>
-            !isBlank(value)
+          (value) => !isBlank(value)
         )
       );
   }
 
-  function validateColumns(
-    rows,
-    definition
-  ) {
+  function validateColumns(rows, definition) {
     const available = new Set(
-      rows.flatMap(
-        (row) =>
-          Object.keys(row)
-      )
+      rows.flatMap((row) => Object.keys(row))
     );
 
     const missing =
@@ -913,33 +810,16 @@
     }
   }
 
-  /*
-    Used by:
-
-    Cartons Consumed
-    Cartons Created
-    Challan Movement
-
-    Rows inside each BAV Code group are sorted using
-    QR Code or Carton No before the report is rendered.
-  */
-  function groupRows(
-    rows,
-    definition
-  ) {
+  function groupRows(rows, definition) {
     const groups = new Map();
 
     rows.forEach((row) => {
       const book = String(
-        row[
-          definition.bookColumn
-        ] ?? ''
+        row[definition.bookColumn] ?? ''
       ).trim();
 
       const bav = String(
-        row[
-          definition.bavColumn
-        ] ?? ''
+        row[definition.bavColumn] ?? ''
       ).trim();
 
       const normalizedBav =
@@ -961,8 +841,7 @@
         });
       }
 
-      const group =
-        groups.get(key);
+      const group = groups.get(key);
 
       if (!group.book && book) {
         group.book = book;
@@ -974,38 +853,26 @@
 
       group.rows.push(row);
 
-      const carton =
-        normalizeCode(
-          row[
-            definition.cartonColumn
-          ]
-        );
+      const carton = normalizeCode(
+        row[definition.cartonColumn]
+      );
 
       if (carton) {
         group.cartons.add(carton);
       }
     });
 
-    /*
-      Sort every group by its QR Code or Carton No.
-    */
     groups.forEach((group) => {
       group.rows.sort(
         (leftRow, rightRow) =>
           compareCartonCodes(
-            leftRow[
-              definition.cartonColumn
-            ],
-            rightRow[
-              definition.cartonColumn
-            ]
+            leftRow[definition.cartonColumn],
+            rightRow[definition.cartonColumn]
           )
       );
     });
 
-    return [
-      ...groups.values()
-    ].sort(
+    return [...groups.values()].sort(
       (a, b) =>
         a.book.localeCompare(
           b.book,
@@ -1027,12 +894,11 @@
   }
 
   function getNumericMoveNumber(value) {
-    const number =
-      Number.parseInt(
-        String(value ?? '')
-          .replace(/[^\d]/g, ''),
-        10
-      );
+    const number = Number.parseInt(
+      String(value ?? '')
+        .replace(/[^\d]/g, ''),
+      10
+    );
 
     return Number.isFinite(number)
       ? number
@@ -1059,181 +925,129 @@
 
   function movementHasMissingChallan(row) {
     return (
-      normalizeText(row.Type) ===
-        'scan out' &&
+      normalizeText(row.Type) === 'scan out' &&
       isBlank(row['Challan No'])
     );
   }
 
-  function getDistinctChallans(
-    movements
-  ) {
-    const challanMap =
-      new Map();
+  function getDistinctChallans(movements) {
+    const challanMap = new Map();
 
-    movements.forEach(
-      (movement) => {
-        const original = String(
-          movement[
-            'Challan No'
-          ] ?? ''
-        ).trim();
+    movements.forEach((movement) => {
+      const original = String(
+        movement['Challan No'] ?? ''
+      ).trim();
 
-        if (isBlank(original)) {
-          return;
-        }
-
-        const normalized =
-          normalizeCode(original);
-
-        if (!normalized) {
-          return;
-        }
-
-        if (
-          !challanMap.has(
-            normalized
-          )
-        ) {
-          challanMap.set(
-            normalized,
-            {
-              value: original,
-              moves: []
-            }
-          );
-        }
-
-        challanMap
-          .get(normalized)
-          .moves
-          .push(
-            movement.__moveNumber
-          );
+      if (isBlank(original)) {
+        return;
       }
-    );
 
-    return [
-      ...challanMap.values()
-    ];
+      const normalized =
+        normalizeCode(original);
+
+      if (!normalized) {
+        return;
+      }
+
+      if (!challanMap.has(normalized)) {
+        challanMap.set(normalized, {
+          value: original,
+          moves: []
+        });
+      }
+
+      challanMap
+        .get(normalized)
+        .moves
+        .push(movement.__moveNumber);
+    });
+
+    return [...challanMap.values()];
   }
 
-  function buildCartonChallanDisplay(
-    carton
-  ) {
-    if (
-      !carton.distinctChallans.length
-    ) {
+  function buildCartonChallanDisplay(carton) {
+    if (!carton.distinctChallans.length) {
       return '';
     }
 
-    if (
-      carton.distinctChallans.length ===
-      1
-    ) {
-      return (
-        carton.distinctChallans[0]
-          .value
-      );
+    if (carton.distinctChallans.length === 1) {
+      return carton.distinctChallans[0].value;
     }
 
     return carton.distinctChallans
       .map((challan) => {
         const moves = [
-          ...new Set(
-            challan.moves
-          )
+          ...new Set(challan.moves)
         ]
-          .sort(
-            (a, b) =>
-              a - b
-          )
-          .map(
-            (move) =>
-              `Move ${move}`
-          )
+          .sort((a, b) => a - b)
+          .map((move) => `Move ${move}`)
           .join(', ');
 
-        return (
-          `${moves}: ` +
-          `${challan.value}`
-        );
+        return `${moves}: ${challan.value}`;
       })
       .join(' | ');
   }
 
-  function buildCartonMovementSummary(
-    rows
-  ) {
-    const cartonMap =
-      new Map();
+  function buildCartonMovementSummary(rows) {
+    const cartonMap = new Map();
 
-    rows.forEach(
-      (row, originalIndex) => {
-        const qrCode = String(
-          row['QR Code'] ?? ''
-        ).trim();
+    rows.forEach((row, originalIndex) => {
+      const qrCode = String(
+        row['QR Code'] ?? ''
+      ).trim();
 
-        const key =
-          normalizeCode(qrCode) ||
-          `blank-qr-${originalIndex}`;
+      const key =
+        normalizeCode(qrCode) ||
+        `blank-qr-${originalIndex}`;
 
-        if (
-          !cartonMap.has(key)
-        ) {
-          cartonMap.set(
-            key,
-            {
-              qrCode,
+      if (!cartonMap.has(key)) {
+        cartonMap.set(key, {
+          qrCode,
 
-              book: String(
-                row['Book Name'] ?? ''
-              ).trim(),
+          book: String(
+            row['Book Name'] ?? ''
+          ).trim(),
 
-              bav: String(
-                row['BAV Code'] ?? ''
-              ).trim(),
+          bav: String(
+            row['BAV Code'] ?? ''
+          ).trim(),
 
-              movements: [],
-              validationMessages: []
-            }
-          );
-        }
-
-        const carton =
-          cartonMap.get(key);
-
-        if (
-          !carton.book &&
-          !isBlank(row['Book Name'])
-        ) {
-          carton.book = String(
-            row['Book Name']
-          ).trim();
-        }
-
-        if (
-          !carton.bav &&
-          !isBlank(row['BAV Code'])
-        ) {
-          carton.bav = String(
-            row['BAV Code']
-          ).trim();
-        }
-
-        carton.movements.push({
-          ...row,
-          __originalIndex:
-            originalIndex
+          movements: [],
+          validationMessages: []
         });
       }
-    );
 
-    const cartons = [
+      const carton = cartonMap.get(key);
+
+      if (
+        !carton.book &&
+        !isBlank(row['Book Name'])
+      ) {
+        carton.book = String(
+          row['Book Name']
+        ).trim();
+      }
+
+      if (
+        !carton.bav &&
+        !isBlank(row['BAV Code'])
+      ) {
+        carton.bav = String(
+          row['BAV Code']
+        ).trim();
+      }
+
+      carton.movements.push({
+        ...row,
+        __originalIndex: originalIndex
+      });
+    });
+
+    const allCartons = [
       ...cartonMap.values()
     ];
 
-    cartons.forEach((carton) => {
+    allCartons.forEach((carton) => {
       carton.movements.sort(
         (a, b) =>
           movementSortValue(a) -
@@ -1252,9 +1066,7 @@
               movement['Move #']
             );
 
-          if (
-            moveNumber !== null
-          ) {
+          if (moveNumber !== null) {
             usedMoveNumbers.add(
               moveNumber
             );
@@ -1272,9 +1084,7 @@
                 movement['Move #']
               );
 
-            if (
-              moveNumber === null
-            ) {
+            if (moveNumber === null) {
               while (
                 usedMoveNumbers.has(
                   nextMoveNumber
@@ -1295,8 +1105,7 @@
 
             return {
               ...movement,
-              __moveNumber:
-                moveNumber
+              __moveNumber: moveNumber
             };
           }
         );
@@ -1339,12 +1148,9 @@
         );
 
       carton.hasChallanMismatch =
-        carton.distinctChallans
-          .length > 1;
+        carton.distinctChallans.length > 1;
 
-      if (
-        carton.hasChallanMismatch
-      ) {
+      if (carton.hasChallanMismatch) {
         carton.validationMessages.push(
           `Different Challan Nos found: ${
             carton.distinctChallans
@@ -1367,53 +1173,54 @@
         carton.hasChallanMismatch;
     });
 
-    const groupMap =
-      new Map();
+    /*
+      IMPORTANT CHANGE:
 
-    cartons.forEach(
-      (carton, index) => {
-        const normalizedBav =
-          normalizeCode(
-            carton.bav
-          );
+      Only keep QR Codes with more than one movement.
 
-        const normalizedBook =
-          normalizeText(
-            carton.book
-          );
+      One movement:
+      - excluded from preview
+      - excluded from PDF
+      - excluded from counts
+      - excluded from warnings
 
-        const key = normalizedBav
-          ? `bav|||${normalizedBav}`
-          : normalizedBook
-            ? `book|||${normalizedBook}`
-            : `unknown|||${index}`;
-
-        if (
-          !groupMap.has(key)
-        ) {
-          groupMap.set(
-            key,
-            {
-              book: carton.book,
-              bav: carton.bav,
-              cartons: []
-            }
-          );
-        }
-
-        groupMap
-          .get(key)
-          .cartons
-          .push(carton);
-      }
+      Two or more movements:
+      - included normally
+    */
+    const cartons = allCartons.filter(
+      (carton) =>
+        carton.movements.length > 1
     );
 
-    /*
-      Carton Movements sorting.
+    const groupMap = new Map();
 
-      Every QR Code inside the same BAV Code group is
-      sorted by its final carton number.
-    */
+    cartons.forEach((carton, index) => {
+      const normalizedBav =
+        normalizeCode(carton.bav);
+
+      const normalizedBook =
+        normalizeText(carton.book);
+
+      const key = normalizedBav
+        ? `bav|||${normalizedBav}`
+        : normalizedBook
+          ? `book|||${normalizedBook}`
+          : `unknown|||${index}`;
+
+      if (!groupMap.has(key)) {
+        groupMap.set(key, {
+          book: carton.book,
+          bav: carton.bav,
+          cartons: []
+        });
+      }
+
+      groupMap
+        .get(key)
+        .cartons
+        .push(carton);
+    });
+
     const groups = [
       ...groupMap.values()
     ]
@@ -1448,101 +1255,91 @@
           )
       );
 
+    const maxMoveNumber =
+      cartons.reduce(
+        (maximum, carton) => {
+          const cartonMaximum =
+            carton.movements.reduce(
+              (currentMaximum, movement) =>
+                Math.max(
+                  currentMaximum,
+                  movement.__moveNumber || 0
+                ),
+              0
+            );
+
+          return Math.max(
+            maximum,
+            cartonMaximum
+          );
+        },
+        0
+      );
+
     return {
       cartons,
       groups,
-
-      maxMoveNumber:
-        cartons.reduce(
-          (maximum, carton) =>
-            Math.max(
-              maximum,
-              ...carton.movements.map(
-                (movement) =>
-                  movement.__moveNumber ||
-                  0
-              )
-            ),
-          0
-        )
+      maxMoveNumber,
+      excludedSingleMovementCount:
+        allCartons.length - cartons.length
     };
   }
 
-  function buildMovementPathHtml(
-    carton
-  ) {
+  function buildMovementPathHtml(carton) {
     return carton.movements
-      .map(
-        (movement, index) => {
-          const location =
-            isBlank(
-              movement.Location
-            )
-              ? 'Unknown Location'
-              : String(
-                  movement.Location
-                ).trim();
-
-          const type =
-            isBlank(
-              movement.Type
-            )
-              ? `Move ${
-                  movement.__moveNumber
-                }`
-              : String(
-                  movement.Type
-                ).trim();
-
-          const colorNumber =
-            getMoveColorIndex(
-              index
-            ) + 1;
-
-          const item = `
-            <span class="movement-path-item move-color-${colorNumber}">
-              ${escapeHtml(location)}
-              {${escapeHtml(type)}}
-            </span>
-          `;
-
-          if (
-            index ===
-            carton.movements.length - 1
-          ) {
-            return item;
-          }
-
-          return `
-            ${item}
-            <span class="movement-path-arrow">→</span>
-          `;
-        }
-      )
-      .join(' ');
-  }
-
-  function buildMovementPathText(
-    carton
-  ) {
-    return carton.movements
-      .map((movement) => {
+      .map((movement, index) => {
         const location =
-          isBlank(
-            movement.Location
-          )
+          isBlank(movement.Location)
             ? 'Unknown Location'
             : String(
                 movement.Location
               ).trim();
 
         const type =
-          isBlank(
-            movement.Type
-          )
-            ? `Move ${
-                movement.__moveNumber
-              }`
+          isBlank(movement.Type)
+            ? `Move ${movement.__moveNumber}`
+            : String(
+                movement.Type
+              ).trim();
+
+        const colorNumber =
+          getMoveColorIndex(index) + 1;
+
+        const item = `
+          <span class="movement-path-item move-color-${colorNumber}">
+            ${escapeHtml(location)}
+            {${escapeHtml(type)}}
+          </span>
+        `;
+
+        if (
+          index ===
+          carton.movements.length - 1
+        ) {
+          return item;
+        }
+
+        return `
+          ${item}
+          <span class="movement-path-arrow">→</span>
+        `;
+      })
+      .join(' ');
+  }
+
+  function buildMovementPathText(carton) {
+    return carton.movements
+      .map((movement) => {
+        const location =
+          isBlank(movement.Location)
+            ? 'Unknown Location'
+            : String(
+                movement.Location
+              ).trim();
+
+        const type =
+          isBlank(movement.Type)
+            ? `Move ${movement.__moveNumber}`
             : String(
                 movement.Type
               ).trim();
@@ -1552,10 +1349,7 @@
       .join(' -> ');
   }
 
-  async function parseFile(
-    file,
-    reportType
-  ) {
+  async function parseFile(file, reportType) {
     const definition =
       REPORTS[reportType];
 
@@ -1592,9 +1386,7 @@
       }
     );
 
-    if (
-      !workbook.SheetNames.length
-    ) {
+    if (!workbook.SheetNames.length) {
       throw new Error(
         'The file does not contain a readable worksheet.'
       );
@@ -1608,9 +1400,7 @@
 
     const rows = normalizeRows(
       XLSX.utils.sheet_to_json(
-        workbook.Sheets[
-          match.sheet
-        ],
+        workbook.Sheets[match.sheet],
         {
           defval: '',
           raw: true
@@ -1635,9 +1425,7 @@
         rows
           .map((row) =>
             dateOnlyKey(
-              row[
-                definition.dateColumn
-              ]
+              row[definition.dateColumn]
             )
           )
           .filter(Boolean)
@@ -1663,9 +1451,7 @@
       uniqueDates
     };
 
-    if (
-      definition.pivotMovements
-    ) {
+    if (definition.pivotMovements) {
       const summary =
         buildCartonMovementSummary(
           rows
@@ -1679,6 +1465,9 @@
 
       report.maxMoveNumber =
         summary.maxMoveNumber;
+
+      report.excludedSingleMovementCount =
+        summary.excludedSingleMovementCount;
 
       report.missingChallanCount =
         summary.cartons.filter(
@@ -1709,14 +1498,11 @@
       .filter(
         (column) =>
           column !==
-          report.definition
-            .dateColumn
+          report.definition.dateColumn
       );
   }
 
-  function cartonMovementColumns(
-    report
-  ) {
+  function cartonMovementColumns(report) {
     const columns = [
       'QR Code',
       'Book Name',
@@ -1732,9 +1518,7 @@
           carton.hasValidationProblem
       )
     ) {
-      columns.push(
-        'Validation'
-      );
+      columns.push('Validation');
     }
 
     return columns;
@@ -1773,16 +1557,13 @@
     return values[column] ?? '';
   }
 
-  function renderStandardReport(
-    report
-  ) {
+  function renderStandardReport(report) {
     const columns =
       visibleColumns(report);
 
     const countColumnIndex =
       columns.indexOf(
-        report.definition
-          .countColumn
+        report.definition.countColumn
       );
 
     const groupHtml =
@@ -1790,64 +1571,59 @@
         .map((group) => {
           const rowsHtml =
             group.rows
-              .map(
-                (
-                  row,
-                  rowIndex
-                ) => {
-                  const cells =
-                    columns
-                      .map((column) => {
-                        const value =
-                          formatCell(
-                            row[column],
-                            column
-                          );
+              .map((row, rowIndex) => {
+                const cells =
+                  columns
+                    .map((column) => {
+                      const value =
+                        formatCell(
+                          row[column],
+                          column
+                        );
 
-                        const classes = [
-                          column ===
-                            report.definition
-                              .bookColumn &&
-                          rowIndex === 0
-                            ? 'book-cell-first'
-                            : '',
-
+                      const classes = [
+                        column ===
                           report.definition
-                            .highlightCreatedStatus
-                            ? getCreatedCellClass(
-                                column,
-                                value
-                              )
-                            : '',
+                            .bookColumn &&
+                        rowIndex === 0
+                          ? 'book-cell-first'
+                          : '',
 
-                          value === ''
-                            ? 'empty-cell'
-                            : ''
-                        ]
-                          .filter(Boolean)
-                          .join(' ');
+                        report.definition
+                          .highlightCreatedStatus
+                          ? getCreatedCellClass(
+                              column,
+                              value
+                            )
+                          : '',
 
-                        return `
-                          <td class="${classes}">
-                            ${
-                              value === ''
-                                ? '—'
-                                : escapeHtml(
-                                    value
-                                  )
-                            }
-                          </td>
-                        `;
-                      })
-                      .join('');
+                        value === ''
+                          ? 'empty-cell'
+                          : ''
+                      ]
+                        .filter(Boolean)
+                        .join(' ');
 
-                  return `
-                    <tr class="detail-row">
-                      ${cells}
-                    </tr>
-                  `;
-                }
-              )
+                      return `
+                        <td class="${classes}">
+                          ${
+                            value === ''
+                              ? '—'
+                              : escapeHtml(
+                                  value
+                                )
+                          }
+                        </td>
+                      `;
+                    })
+                    .join('');
+
+                return `
+                  <tr class="detail-row">
+                    ${cells}
+                  </tr>
+                `;
+              })
               .join('');
 
           const count =
@@ -1867,8 +1643,7 @@
                     ${
                       index ===
                       countColumnIndex
-                        ? count
-                            .toLocaleString()
+                        ? count.toLocaleString()
                         : ''
                     }
                   </td>
@@ -1906,13 +1681,19 @@
     `;
   }
 
-  function renderCartonMovementReport(
-    report
-  ) {
+  function renderCartonMovementReport(report) {
     const columns =
       cartonMovementColumns(
         report
       );
+
+    if (!report.movementGroups.length) {
+      return `
+        <div class="error">
+          No cartons have more than one movement.
+        </div>
+      `;
+    }
 
     const groupHtml =
       report.movementGroups
@@ -1920,97 +1701,87 @@
           <tbody class="report-group">
 
             ${group.cartons
-              .map(
-                (
-                  carton,
-                  index
-                ) => `
-                  <tr class="${
-                    carton
-                      .hasValidationProblem
-                      ? 'invalid-scanout-row'
-                      : ''
-                  }">
+              .map((carton, index) => `
+                <tr class="${
+                  carton.hasValidationProblem
+                    ? 'invalid-scanout-row'
+                    : ''
+                }">
 
-                    ${columns
-                      .map((column) => {
-                        if (
-                          column ===
-                          'Movement Path'
-                        ) {
-                          return `
-                            <td class="movement-path-cell">
-                              <div class="movement-path">
-                                ${buildMovementPathHtml(carton)}
-                              </div>
-                            </td>
-                          `;
-                        }
-
-                        const value =
-                          movementCellValue(
-                            carton,
-                            column
-                          );
-
-                        const classes = [
-                          column ===
-                            'Book Name' &&
-                          index === 0
-                            ? 'book-cell-first'
-                            : '',
-
-                          column ===
-                            'Validation'
-                            ? 'validation-cell'
-                            : '',
-
-                          value === ''
-                            ? 'empty-cell'
-                            : ''
-                        ]
-                          .filter(Boolean)
-                          .join(' ');
-
+                  ${columns
+                    .map((column) => {
+                      if (
+                        column ===
+                        'Movement Path'
+                      ) {
                         return `
-                          <td class="${classes}">
-                            ${
-                              value === ''
-                                ? '—'
-                                : escapeHtml(
-                                    value
-                                  )
-                            }
+                          <td class="movement-path-cell">
+                            <div class="movement-path">
+                              ${buildMovementPathHtml(carton)}
+                            </div>
                           </td>
                         `;
-                      })
-                      .join('')}
-                  </tr>
-                `
-              )
+                      }
+
+                      const value =
+                        movementCellValue(
+                          carton,
+                          column
+                        );
+
+                      const classes = [
+                        column ===
+                          'Book Name' &&
+                        index === 0
+                          ? 'book-cell-first'
+                          : '',
+
+                        column ===
+                          'Validation'
+                          ? 'validation-cell'
+                          : '',
+
+                        value === ''
+                          ? 'empty-cell'
+                          : ''
+                      ]
+                        .filter(Boolean)
+                        .join(' ');
+
+                      return `
+                        <td class="${classes}">
+                          ${
+                            value === ''
+                              ? '—'
+                              : escapeHtml(value)
+                          }
+                        </td>
+                      `;
+                    })
+                    .join('')}
+                </tr>
+              `)
               .join('')}
 
             <tr class="group-count-row">
               ${columns
-                .map(
-                  (column) => `
-                    <td class="${
+                .map((column) => `
+                  <td class="${
+                    column ===
+                    'Carton Count'
+                      ? 'group-count'
+                      : ''
+                  }">
+                    ${
                       column ===
                       'Carton Count'
-                        ? 'group-count'
+                        ? group.cartons
+                            .length
+                            .toLocaleString()
                         : ''
-                    }">
-                      ${
-                        column ===
-                        'Carton Count'
-                          ? group.cartons
-                              .length
-                              .toLocaleString()
-                          : ''
-                      }
-                    </td>
-                  `
-                )
+                    }
+                  </td>
+                `)
                 .join('')}
             </tr>
           </tbody>
@@ -2054,23 +1825,19 @@
       warnings.push(
         `More than one date is present in this file: ${
           report.uniqueDates
-            .map(
-              formatDateOnly
-            )
+            .map(formatDateOnly)
             .join(', ')
         }`
       );
     }
 
     if (
-      report.definition
-        .pivotMovements &&
+      report.definition.pivotMovements &&
       report.missingChallanCount > 0
     ) {
       warnings.push(
         `${report.missingChallanCount} carton row${
-          report.missingChallanCount ===
-          1
+          report.missingChallanCount === 1
             ? ''
             : 's'
         } marked red because Scan OUT has no Challan No.`
@@ -2078,15 +1845,12 @@
     }
 
     if (
-      report.definition
-        .pivotMovements &&
+      report.definition.pivotMovements &&
       report.challanMismatchCount > 0
     ) {
       warnings.push(
         `${report.challanMismatchCount} carton row${
-          report
-            .challanMismatchCount ===
-          1
+          report.challanMismatchCount === 1
             ? ''
             : 's'
         } marked red because the movements contain different Challan Nos.`
@@ -2107,17 +1871,20 @@
     let previewMeta =
       `${report.filename} · Source: ${report.selectedSheet}`;
 
-    if (
-      report.definition
-        .pivotMovements
-    ) {
+    if (report.definition.pivotMovements) {
       previewMeta +=
-        ` · ${report.movementCartons.length} cartons` +
-        ` · Up to ${report.maxMoveNumber} movement${
-          report.maxMoveNumber === 1
-            ? ''
-            : 's'
-        }`;
+        ` · ${report.movementCartons.length} cartons with multiple movements`;
+
+      if (
+        report.excludedSingleMovementCount > 0
+      ) {
+        previewMeta +=
+          ` · ${report.excludedSingleMovementCount} single-movement carton${
+            report.excludedSingleMovementCount === 1
+              ? ''
+              : 's'
+          } skipped`;
+      }
     }
 
     $('#previewMeta').textContent =
@@ -2139,9 +1906,7 @@
             .map(
               (warning) => `
                 <div class="warning">
-                  ⚠ ${escapeHtml(
-                    warning
-                  )}
+                  ⚠ ${escapeHtml(warning)}
                 </div>
               `
             )
@@ -2149,27 +1914,18 @@
         : '';
 
     $('#reportPanel').innerHTML =
-      report.definition
-        .pivotMovements
-        ? renderCartonMovementReport(
-            report
-          )
-        : renderStandardReport(
-            report
-          );
+      report.definition.pivotMovements
+        ? renderCartonMovementReport(report)
+        : renderStandardReport(report);
 
     window.scrollTo({
       top:
-        $('#previewSection')
-          .offsetTop - 20,
+        $('#previewSection').offsetTop - 20,
       behavior: 'smooth'
     });
   }
 
-  function addPdfHeader(
-    pdf,
-    report
-  ) {
+  function addPdfHeader(pdf, report) {
     pdf.setFont(
       'helvetica',
       'bold'
@@ -2218,12 +1974,10 @@
 
   function addPdfPageNumber(pdf) {
     const pageWidth =
-      pdf.internal.pageSize
-        .getWidth();
+      pdf.internal.pageSize.getWidth();
 
     const pageHeight =
-      pdf.internal.pageSize
-        .getHeight();
+      pdf.internal.pageSize.getHeight();
 
     pdf.setFont(
       'helvetica',
@@ -2232,16 +1986,11 @@
 
     pdf.setFontSize(8);
 
-    pdf.setTextColor(
-      0,
-      0,
-      0
-    );
+    pdf.setTextColor(0, 0, 0);
 
     pdf.text(
       `Page ${
-        pdf.internal
-          .getNumberOfPages()
+        pdf.internal.getNumberOfPages()
       }`,
       pageWidth - 65,
       pageHeight - 10
@@ -2259,12 +2008,7 @@
 
     const headSize = 3.5;
 
-    pdf.setDrawColor(
-      0,
-      0,
-      0
-    );
-
+    pdf.setDrawColor(0, 0, 0);
     pdf.setLineWidth(0.8);
 
     pdf.line(
@@ -2319,28 +2063,20 @@
       'bold'
     );
 
-    pdf.setFontSize(
-      fontSize
-    );
+    pdf.setFontSize(fontSize);
 
     carton.movements.forEach(
       (movement, index) => {
         const location =
-          isBlank(
-            movement.Location
-          )
+          isBlank(movement.Location)
             ? 'Unknown Location'
             : String(
                 movement.Location
               ).trim();
 
         const type =
-          isBlank(
-            movement.Type
-          )
-            ? `Move ${
-                movement.__moveNumber
-              }`
+          isBlank(movement.Type)
+            ? `Move ${movement.__moveNumber}`
             : String(
                 movement.Type
               ).trim();
@@ -2349,9 +2085,7 @@
           `${location} {${type}}`;
 
         const textWidth =
-          pdf.getTextWidth(
-            text
-          );
+          pdf.getTextWidth(text);
 
         const needsArrow =
           index <
@@ -2411,11 +2145,7 @@
       }
     );
 
-    pdf.setTextColor(
-      0,
-      0,
-      0
-    );
+    pdf.setTextColor(0, 0, 0);
   }
 
   function drawGroupBorders(
@@ -2424,16 +2154,12 @@
     rowMeta,
     columns
   ) {
-    if (
-      data.section !== 'body'
-    ) {
+    if (data.section !== 'body') {
       return;
     }
 
     const meta =
-      rowMeta[
-        data.row.index
-      ];
+      rowMeta[data.row.index];
 
     if (!meta) {
       return;
@@ -2441,17 +2167,10 @@
 
     const x = data.cell.x;
     const y = data.cell.y;
-    const width =
-      data.cell.width;
-    const height =
-      data.cell.height;
+    const width = data.cell.width;
+    const height = data.cell.height;
 
-    pdf.setDrawColor(
-      0,
-      0,
-      0
-    );
-
+    pdf.setDrawColor(0, 0, 0);
     pdf.setLineWidth(0.9);
 
     if (
@@ -2466,9 +2185,7 @@
       );
     }
 
-    if (
-      meta.type === 'count'
-    ) {
+    if (meta.type === 'count') {
       pdf.line(
         x,
         y + height,
@@ -2477,9 +2194,7 @@
       );
     }
 
-    if (
-      data.column.index === 0
-    ) {
+    if (data.column.index === 0) {
       pdf.line(
         x,
         y,
@@ -2501,119 +2216,93 @@
     }
   }
 
-  function standardPdfColumnWidths(
-    columns
-  ) {
+  function standardPdfColumnWidths(columns) {
     const widths = {};
-
     const available = 760;
-
     const base =
-      available /
-      columns.length;
+      available / columns.length;
 
-    columns.forEach(
-      (column, index) => {
-        let width = base;
+    columns.forEach((column, index) => {
+      let width = base;
 
-        if (
-          /Book/.test(column)
-        ) {
-          width *= 1.45;
-        }
-
-        if (
-          /QR Code|Carton No|Challan No/.test(
-            column
-          )
-        ) {
-          width *= 1.25;
-        }
-
-        if (
-          /Qty|Status|Audited/.test(
-            column
-          )
-        ) {
-          width *= 0.75;
-        }
-
-        widths[index] = {
-          cellWidth:
-            Math.max(
-              42,
-              Math.min(
-                135,
-                width
-              )
-            )
-        };
+      if (/Book/.test(column)) {
+        width *= 1.45;
       }
-    );
+
+      if (
+        /QR Code|Carton No|Challan No/.test(
+          column
+        )
+      ) {
+        width *= 1.25;
+      }
+
+      if (
+        /Qty|Status|Audited/.test(column)
+      ) {
+        width *= 0.75;
+      }
+
+      widths[index] = {
+        cellWidth: Math.max(
+          42,
+          Math.min(135, width)
+        )
+      };
+    });
 
     return widths;
   }
 
-  function movementPdfColumnWidths(
-    columns
-  ) {
+  function movementPdfColumnWidths(columns) {
     const widths = {};
 
-    columns.forEach(
-      (column, index) => {
-        let width = 90;
+    columns.forEach((column, index) => {
+      let width = 90;
 
-        if (
-          column === 'QR Code'
-        ) {
-          width = 110;
-        } else if (
-          column === 'Book Name'
-        ) {
-          width = 115;
-        } else if (
-          column === 'BAV Code'
-        ) {
-          width = 90;
-        } else if (
-          column ===
-          'Carton Count'
-        ) {
-          width = 55;
-        } else if (
-          column ===
-          'Movement Path'
-        ) {
-          width = 455;
-        } else if (
-          column === 'Challan No'
-        ) {
-          width = 125;
-        } else if (
-          column === 'Validation'
-        ) {
-          width = 150;
-        }
-
-        widths[index] = {
-          cellWidth: width
-        };
+      if (column === 'QR Code') {
+        width = 110;
+      } else if (
+        column === 'Book Name'
+      ) {
+        width = 115;
+      } else if (
+        column === 'BAV Code'
+      ) {
+        width = 90;
+      } else if (
+        column === 'Carton Count'
+      ) {
+        width = 55;
+      } else if (
+        column === 'Movement Path'
+      ) {
+        width = 455;
+      } else if (
+        column === 'Challan No'
+      ) {
+        width = 125;
+      } else if (
+        column === 'Validation'
+      ) {
+        width = 150;
       }
-    );
+
+      widths[index] = {
+        cellWidth: width
+      };
+    });
 
     return widths;
   }
 
-  function downloadStandardPdf(
-    report
-  ) {
+  function downloadStandardPdf(report) {
     const { jsPDF } =
       window.jspdf;
 
     const pdf =
       new jsPDF({
-        orientation:
-          'landscape',
+        orientation: 'landscape',
         unit: 'pt',
         format: 'a4'
       });
@@ -2623,29 +2312,21 @@
 
     const countColumnIndex =
       columns.indexOf(
-        report.definition
-          .countColumn
+        report.definition.countColumn
       );
 
     const bookColumnIndex =
       columns.indexOf(
-        report.definition
-          .bookColumn
+        report.definition.bookColumn
       );
 
     const body = [];
     const rowMeta = [];
 
     report.groups.forEach(
-      (
-        group,
-        groupIndex
-      ) => {
+      (group, groupIndex) => {
         group.rows.forEach(
-          (
-            row,
-            rowIndex
-          ) => {
+          (row, rowIndex) => {
             body.push(
               columns.map(
                 (column) =>
@@ -2669,8 +2350,7 @@
         body.push(
           columns.map(
             (_, index) =>
-              index ===
-              countColumnIndex
+              index === countColumnIndex
                 ? String(
                     group.cartons.size ||
                     group.rows.length
@@ -2714,12 +2394,7 @@
             ? 6.2
             : 7.2,
 
-        lineColor: [
-          190,
-          190,
-          190
-        ],
-
+        lineColor: [190, 190, 190],
         lineWidth: 0.25,
         cellPadding: 2.3,
         overflow: 'linebreak',
@@ -2730,21 +2405,11 @@
         fillColor:
           PDF_HEADER_PEACH,
 
-        textColor: [
-          0,
-          0,
-          0
-        ],
-
+        textColor: [0, 0, 0],
         fontStyle: 'bold',
         halign: 'center',
         lineWidth: 0.8,
-
-        lineColor: [
-          0,
-          0,
-          0
-        ]
+        lineColor: [0, 0, 0]
       },
 
       columnStyles:
@@ -2760,28 +2425,23 @@
         }
 
         const meta =
-          rowMeta[
-            data.row.index
-          ];
+          rowMeta[data.row.index];
 
         if (!meta) {
           return;
         }
 
-        data.cell.styles
-          .fontStyle =
-            'normal';
+        data.cell.styles.fontStyle =
+          'normal';
 
         if (
-          meta.type ===
-            'detail' &&
+          meta.type === 'detail' &&
           meta.isFirst &&
           data.column.index ===
             bookColumnIndex
         ) {
-          data.cell.styles
-            .fontStyle =
-              'bold';
+          data.cell.styles.fontStyle =
+            'bold';
         }
 
         if (
@@ -2790,9 +2450,7 @@
             .highlightCreatedStatus
         ) {
           const column =
-            columns[
-              data.column.index
-            ];
+            columns[data.column.index];
 
           const color =
             getCreatedPdfColor(
@@ -2801,41 +2459,27 @@
             );
 
           if (color) {
-            data.cell.styles
-              .fillColor =
-                color;
+            data.cell.styles.fillColor =
+              color;
           }
         }
 
-        if (
-          meta.type === 'count'
-        ) {
-          data.cell.styles
-            .fillColor =
-              data.column.index ===
-              countColumnIndex
-                ? [
-                    228,
-                    243,
-                    218
-                  ]
-                : [
-                    255,
-                    255,
-                    255
-                  ];
+        if (meta.type === 'count') {
+          data.cell.styles.fillColor =
+            data.column.index ===
+            countColumnIndex
+              ? [228, 243, 218]
+              : [255, 255, 255];
 
           if (
             data.column.index ===
             countColumnIndex
           ) {
-            data.cell.styles
-              .fontStyle =
-                'bold';
+            data.cell.styles.fontStyle =
+              'bold';
 
-            data.cell.styles
-              .halign =
-                'center';
+            data.cell.styles.halign =
+              'center';
           }
         }
       },
@@ -2850,41 +2494,41 @@
       },
 
       didDrawPage() {
-        addPdfPageNumber(
-          pdf
-        );
+        addPdfPageNumber(pdf);
       }
     });
 
     pdf.save(
       `${
-        report.reportLabel
-          .replace(
-            /[^a-z0-9]+/gi,
-            '_'
-          )
+        report.reportLabel.replace(
+          /[^a-z0-9]+/gi,
+          '_'
+        )
       }_Report.pdf`
     );
   }
 
-  function downloadCartonMovementPdf(
-    report
-  ) {
+  function downloadCartonMovementPdf(report) {
+    if (!report.movementCartons.length) {
+      alert(
+        'No cartons have more than one movement, so there is nothing to include in the PDF.'
+      );
+
+      return;
+    }
+
     const { jsPDF } =
       window.jspdf;
 
     const pdf =
       new jsPDF({
-        orientation:
-          'landscape',
+        orientation: 'landscape',
         unit: 'pt',
         format: 'a3'
       });
 
     const columns =
-      cartonMovementColumns(
-        report
-      );
+      cartonMovementColumns(report);
 
     const movementPathColumnIndex =
       columns.indexOf(
@@ -2914,74 +2558,63 @@
     const body = [];
     const rowMeta = [];
 
-    report.movementGroups
-      .forEach(
-        (
-          group,
-          groupIndex
-        ) => {
-          group.cartons.forEach(
-            (
+    report.movementGroups.forEach(
+      (group, groupIndex) => {
+        group.cartons.forEach(
+          (carton, cartonIndex) => {
+            body.push(
+              columns.map(
+                (column) =>
+                  column ===
+                  'Movement Path'
+                    ? ''
+                    : movementCellValue(
+                        carton,
+                        column
+                      )
+              )
+            );
+
+            rowMeta.push({
+              type: 'detail',
+              groupIndex,
+
+              isFirst:
+                cartonIndex === 0,
+
               carton,
-              cartonIndex
-            ) => {
-              body.push(
-                columns.map(
-                  (column) =>
-                    column ===
-                    'Movement Path'
-                      ? ''
-                      : movementCellValue(
-                          carton,
-                          column
-                        )
-                )
-              );
 
-              rowMeta.push({
-                type: 'detail',
-                groupIndex,
+              invalid:
+                carton.hasValidationProblem,
 
-                isFirst:
-                  cartonIndex === 0,
+              challanMismatch:
+                carton.hasChallanMismatch
+            });
+          }
+        );
 
-                carton,
+        body.push(
+          columns.map(
+            (column) =>
+              column ===
+              'Carton Count'
+                ? String(
+                    group.cartons.length
+                  )
+                : ''
+          )
+        );
 
-                invalid:
-                  carton
-                    .hasValidationProblem,
-
-                challanMismatch:
-                  carton
-                    .hasChallanMismatch
-              });
-            }
-          );
-
-          body.push(
-            columns.map(
-              (column) =>
-                column ===
-                'Carton Count'
-                  ? String(
-                      group.cartons
-                        .length
-                    )
-                  : ''
-            )
-          );
-
-          rowMeta.push({
-            type: 'count',
-            groupIndex,
-            isFirst: false,
-            carton: null,
-            invalid: false,
-            challanMismatch:
-              false
-          });
-        }
-      );
+        rowMeta.push({
+          type: 'count',
+          groupIndex,
+          isFirst: false,
+          carton: null,
+          invalid: false,
+          challanMismatch: false
+        });
+      }
+    );
 
     pdf.autoTable({
       startY:
@@ -2994,8 +2627,7 @@
       body,
       theme: 'grid',
 
-      horizontalPageBreak:
-        false,
+      horizontalPageBreak: false,
 
       margin: {
         left: 18,
@@ -3010,24 +2642,10 @@
         cellPadding: 3,
         lineWidth: 0.22,
 
-        lineColor: [
-          195,
-          195,
-          195
-        ],
-
-        textColor: [
-          0,
-          0,
-          0
-        ],
-
-        overflow:
-          'linebreak',
-
-        valign:
-          'middle',
-
+        lineColor: [195, 195, 195],
+        textColor: [0, 0, 0],
+        overflow: 'linebreak',
+        valign: 'middle',
         minCellHeight: 25
       },
 
@@ -3035,21 +2653,11 @@
         fillColor:
           PDF_HEADER_PEACH,
 
-        textColor: [
-          0,
-          0,
-          0
-        ],
-
+        textColor: [0, 0, 0],
         fontStyle: 'bold',
         halign: 'center',
         lineWidth: 0.8,
-
-        lineColor: [
-          0,
-          0,
-          0
-        ]
+        lineColor: [0, 0, 0]
       },
 
       columnStyles:
@@ -3065,17 +2673,14 @@
         }
 
         const meta =
-          rowMeta[
-            data.row.index
-          ];
+          rowMeta[data.row.index];
 
         if (!meta) {
           return;
         }
 
         if (
-          meta.type ===
-            'detail' &&
+          meta.type === 'detail' &&
           data.column.index ===
             movementPathColumnIndex
         ) {
@@ -3091,40 +2696,28 @@
               )
             );
 
-          data.cell.styles
-            .minCellHeight =
-              14 +
-              estimatedLines * 11;
+          data.cell.styles.minCellHeight =
+            14 +
+            estimatedLines * 11;
         }
 
         if (
-          meta.type ===
-            'detail' &&
+          meta.type === 'detail' &&
           meta.invalid
         ) {
-          data.cell.styles
-            .fillColor = [
-              255,
-              224,
-              224
-            ];
+          data.cell.styles.fillColor =
+            [255, 224, 224];
 
           if (
-            validationColumnIndex !==
-              -1 &&
+            validationColumnIndex !== -1 &&
             data.column.index ===
               validationColumnIndex
           ) {
-            data.cell.styles
-              .textColor = [
-                150,
-                0,
-                0
-              ];
+            data.cell.styles.textColor =
+              [150, 0, 0];
 
-            data.cell.styles
-              .fontStyle =
-                'bold';
+            data.cell.styles.fontStyle =
+              'bold';
           }
 
           if (
@@ -3132,60 +2725,40 @@
             data.column.index ===
               challanColumnIndex
           ) {
-            data.cell.styles
-              .textColor = [
-                150,
-                0,
-                0
-              ];
+            data.cell.styles.textColor =
+              [150, 0, 0];
 
-            data.cell.styles
-              .fontStyle =
-                'bold';
+            data.cell.styles.fontStyle =
+              'bold';
           }
         }
 
         if (
-          meta.type ===
-            'detail' &&
+          meta.type === 'detail' &&
           meta.isFirst &&
           data.column.index ===
             bookColumnIndex
         ) {
-          data.cell.styles
-            .fontStyle =
-              'bold';
+          data.cell.styles.fontStyle =
+            'bold';
         }
 
-        if (
-          meta.type === 'count'
-        ) {
-          data.cell.styles
-            .fillColor =
-              data.column.index ===
-              countColumnIndex
-                ? [
-                    228,
-                    243,
-                    218
-                  ]
-                : [
-                    255,
-                    255,
-                    255
-                  ];
+        if (meta.type === 'count') {
+          data.cell.styles.fillColor =
+            data.column.index ===
+            countColumnIndex
+              ? [228, 243, 218]
+              : [255, 255, 255];
 
           if (
             data.column.index ===
             countColumnIndex
           ) {
-            data.cell.styles
-              .fontStyle =
-                'bold';
+            data.cell.styles.fontStyle =
+              'bold';
 
-            data.cell.styles
-              .halign =
-                'center';
+            data.cell.styles.halign =
+              'center';
           }
         }
       },
@@ -3193,9 +2766,7 @@
       didDrawCell(data) {
         const meta =
           data.section === 'body'
-            ? rowMeta[
-                data.row.index
-              ]
+            ? rowMeta[data.row.index]
             : null;
 
         if (
@@ -3220,9 +2791,7 @@
       },
 
       didDrawPage() {
-        addPdfPageNumber(
-          pdf
-        );
+        addPdfPageNumber(pdf);
       }
     });
 
@@ -3257,20 +2826,15 @@
         event.preventDefault();
 
         const file =
-          $('#fileInput')
-            .files[0];
+          $('#fileInput').files[0];
 
         const reportType =
-          $('#reportType')
-            .value;
+          $('#reportType').value;
 
         const submitButton =
           event.submitter;
 
-        if (
-          !file ||
-          !reportType
-        ) {
+        if (!file || !reportType) {
           $('#message').innerHTML = `
             <div class="error">
               Choose a report type and a file.
@@ -3281,15 +2845,12 @@
         }
 
         try {
-          submitButton.disabled =
-            true;
+          submitButton.disabled = true;
 
-          submitButton
-            .textContent =
-              'Reading file…';
+          submitButton.textContent =
+            'Reading file…';
 
-          $('#message')
-            .innerHTML = '';
+          $('#message').innerHTML = '';
 
           state
             .unknownStatusClasses
@@ -3320,12 +2881,10 @@
             </div>
           `;
         } finally {
-          submitButton.disabled =
-            false;
+          submitButton.disabled = false;
 
-          submitButton
-            .textContent =
-              'Validate & Preview';
+          submitButton.textContent =
+            'Validate & Preview';
         }
       }
     );
@@ -3339,7 +2898,6 @@
   $('#printBtn')
     .addEventListener(
       'click',
-      () =>
-        window.print()
+      () => window.print()
     );
 })();
