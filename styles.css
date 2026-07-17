@@ -7,14 +7,30 @@
   --green-dark: #173d2a;
   --green-soft: #e4f3da;
 
-  --header-green: #dcefd6;
+  --header-peach: #ffe2ca;
 
-  --move-1: #fff3bf;
-  --move-2: #dceeff;
-  --move-3: #ead8c6;
-  --move-4: #eadff5;
-  --move-5: #ffe1ce;
-  --move-6: #dcefe9;
+  --audited-yes: #ddf2da;
+  --audited-no: #ffe0e0;
+
+  --status-active: #dceeff;
+  --status-consumed: #ffe5bf;
+  --status-cancelled: #e6d7f3;
+
+  --status-extra-1: #dff1ec;
+  --status-extra-2: #fff0bd;
+  --status-extra-3: #dcdff7;
+  --status-extra-4: #f2d9e6;
+  --status-extra-5: #d9edf5;
+  --status-extra-6: #e8e0cf;
+
+  --move-text-1: #173f70;
+  --move-text-2: #6f2036;
+  --move-text-3: #175c3a;
+  --move-text-4: #5b3477;
+  --move-text-5: #8a481f;
+  --move-text-6: #245f68;
+  --move-text-7: #6d5220;
+  --move-text-8: #4b4f8f;
 
   --line: #1e1e1e;
   --light-line: #c9c9c9;
@@ -82,11 +98,7 @@ main {
   border: 2px solid #d6ddd8;
   border-radius: 14px;
   padding: 24px;
-
-  box-shadow:
-    0 8px 24px
-    rgba(24, 43, 31, 0.07);
-
+  box-shadow: 0 8px 24px rgba(24, 43, 31, 0.07);
   margin-bottom: 22px;
 }
 
@@ -99,13 +111,10 @@ main {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-
   background: var(--green);
   color: white;
-
   display: grid;
   place-items: center;
-
   font-weight: 900;
   flex: 0 0 auto;
 }
@@ -247,91 +256,94 @@ td {
   font-weight: 400;
 }
 
-/*
-  Default header color for every report type.
-*/
 th {
   position: sticky;
   top: 0;
   z-index: 2;
-
-  background: var(--header-green);
-
+  background: var(--header-peach);
   font-weight: 900;
   text-align: center;
   font-size: 13px;
-}
-
-/*
-  Carton Movement column-group colors.
-*/
-th.move-group-1,
-td.move-group-1 {
-  background: var(--move-1);
-}
-
-th.move-group-2,
-td.move-group-2 {
-  background: var(--move-2);
-}
-
-th.move-group-3,
-td.move-group-3 {
-  background: var(--move-3);
-}
-
-th.move-group-4,
-td.move-group-4 {
-  background: var(--move-4);
-}
-
-th.move-group-5,
-td.move-group-5 {
-  background: var(--move-5);
-}
-
-th.move-group-6,
-td.move-group-6 {
-  background: var(--move-6);
-}
-
-/*
-  Body colors should remain lighter than the header,
-  so the text stays easy to read.
-*/
-td.move-group-1 {
-  background: #fff9df;
-}
-
-td.move-group-2 {
-  background: #edf6ff;
-}
-
-td.move-group-3 {
-  background: #f4eade;
-}
-
-td.move-group-4 {
-  background: #f4eef9;
-}
-
-td.move-group-5 {
-  background: #fff0e6;
-}
-
-td.move-group-6 {
-  background: #edf7f4;
 }
 
 .book-cell-first {
   font-weight: 900;
 }
 
-/*
-  Light-grey internal row lines.
+/* Cartons Created: Audited */
 
-  Black outer boundary around every BAV Code group.
-*/
+td.audited-yes {
+  background: var(--audited-yes);
+  font-weight: 700;
+  text-align: center;
+}
+
+td.audited-no {
+  background: var(--audited-no);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Cartons Created: known Status values */
+
+td.status-active {
+  background: var(--status-active);
+  font-weight: 700;
+  text-align: center;
+}
+
+td.status-consumed {
+  background: var(--status-consumed);
+  font-weight: 700;
+  text-align: center;
+}
+
+td.status-cancelled {
+  background: var(--status-cancelled);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Cartons Created: unknown future Status values */
+
+td.status-extra-1 {
+  background: var(--status-extra-1);
+  font-weight: 700;
+  text-align: center;
+}
+
+td.status-extra-2 {
+  background: var(--status-extra-2);
+  font-weight: 700;
+  text-align: center;
+}
+
+td.status-extra-3 {
+  background: var(--status-extra-3);
+  font-weight: 700;
+  text-align: center;
+}
+
+td.status-extra-4 {
+  background: var(--status-extra-4);
+  font-weight: 700;
+  text-align: center;
+}
+
+td.status-extra-5 {
+  background: var(--status-extra-5);
+  font-weight: 700;
+  text-align: center;
+}
+
+td.status-extra-6 {
+  background: var(--status-extra-6);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Black outside boundary around each BAV group */
+
 .report-group tr:first-child td {
   border-top: 2px solid #111;
 }
@@ -361,21 +373,17 @@ td.move-group-6 {
   font-size: 14px;
 }
 
-/*
-  Carton Movements may have many movement columns,
-  so this table can scroll horizontally.
-*/
+/* Carton Movement report */
+
 .movement-report-table {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
+  min-width: 1100px;
 }
 
 .movement-report-table th,
 .movement-report-table td {
-  min-width: 105px;
-  max-width: 190px;
   white-space: normal;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .movement-report-table th:nth-child(1),
@@ -399,9 +407,75 @@ td.move-group-6 {
   text-align: center;
 }
 
-/*
-  Validation styling overrides movement-group colors.
-*/
+.movement-report-table th:nth-child(5),
+.movement-report-table td:nth-child(5) {
+  min-width: 560px;
+}
+
+.movement-report-table th:nth-child(6),
+.movement-report-table td:nth-child(6) {
+  min-width: 155px;
+}
+
+.movement-path-cell {
+  padding: 10px 12px;
+}
+
+.movement-path {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.movement-path-item {
+  display: inline;
+  font-weight: 800;
+}
+
+.movement-path-item.move-color-1 {
+  color: var(--move-text-1);
+}
+
+.movement-path-item.move-color-2 {
+  color: var(--move-text-2);
+}
+
+.movement-path-item.move-color-3 {
+  color: var(--move-text-3);
+}
+
+.movement-path-item.move-color-4 {
+  color: var(--move-text-4);
+}
+
+.movement-path-item.move-color-5 {
+  color: var(--move-text-5);
+}
+
+.movement-path-item.move-color-6 {
+  color: var(--move-text-6);
+}
+
+.movement-path-item.move-color-7 {
+  color: var(--move-text-7);
+}
+
+.movement-path-item.move-color-8 {
+  color: var(--move-text-8);
+}
+
+.movement-path-arrow {
+  display: inline;
+  color: #111;
+  font-weight: 900;
+  margin: 0 2px;
+}
+
+/* Error rows override normal colors */
+
 .invalid-scanout-row td {
   background: var(--red-soft) !important;
   border-top-color: #e5a3a3;
