@@ -1,183 +1,166 @@
 (() => {
-  'use strict';
+  "use strict";
 
   const $ = (selector) => document.querySelector(selector);
 
   const state = {
     report: null,
-    unknownStatusClasses: new Map()
+    unknownStatusClasses: new Map(),
   };
 
   const REPORTS = {
     cartons_consumed: {
-      label: 'Cartons Consumed',
-      expectedSheet: 'Cartons Consumed',
-
+      label: "Cartons Consumed",
+      expectedSheet: "Cartons Consumed",
       required: [
-        'QR Code',
-        'Book Title',
-        'BAV Code',
-        'Qty',
-        'Consumed On',
-        'Consumed By',
-        'Last Location'
+        "QR Code",
+        "Book Title",
+        "BAV Code",
+        "Qty",
+        "Consumed On",
+        "Consumed By",
+        "Last Location",
       ],
-
       aliases: {
-        'Book Name': 'Book Title',
-        Quantity: 'Qty',
-        'Consumed Date': 'Consumed On',
-        User: 'Consumed By'
+        "Book Name": "Book Title",
+        Quantity: "Qty",
+        "Consumed Date": "Consumed On",
+        User: "Consumed By",
       },
-
       columns: [
-        'QR Code',
-        'Book Title',
-        'BAV Code',
-        'Qty',
-        'Consumed By',
-        'Consumed On',
-        'Last Location'
+        "QR Code",
+        "Book Title",
+        "BAV Code",
+        "Qty",
+        "Consumed By",
+        "Consumed On",
+        "Last Location",
       ],
-
-      dateColumn: 'Consumed On',
-      bookColumn: 'Book Title',
-      bavColumn: 'BAV Code',
-      cartonColumn: 'QR Code',
-      countColumn: 'Qty'
+      dateColumn: "Consumed On",
+      bookColumn: "Book Title",
+      bavColumn: "BAV Code",
+      cartonColumn: "QR Code",
+      countColumn: "Qty",
     },
 
     cartons_created: {
-      label: 'Cartons Created',
-      expectedSheet: 'Cartons Created',
-
+      label: "Cartons Created",
+      expectedSheet: "Cartons Created",
       required: [
-        'Date Created',
-        'QR Code',
-        'Book Name',
-        'BAV Code',
-        'Qty per Carton',
-        'Initial Location',
-        'Created By',
-        'Status',
-        'Current Location'
+        "Date Created",
+        "QR Code",
+        "Book Name",
+        "BAV Code",
+        "Qty per Carton",
+        "Initial Location",
+        "Created By",
+        "Status",
+        "Current Location",
       ],
-
       aliases: {
-        'Book Title': 'Book Name',
-        'Quantity per Carton': 'Qty per Carton'
+        "Book Title": "Book Name",
+        "Quantity per Carton": "Qty per Carton",
       },
-
       columns: [
-        'Date Created',
-        'QR Code',
-        'Book Name',
-        'BAV Code',
-        'Edition',
-        'Impression',
-        'Qty per Carton',
-        'Initial Location',
-        'Created By',
-        'Status',
-        'Current Location',
-        'Audited'
+        "Date Created",
+        "QR Code",
+        "Book Name",
+        "BAV Code",
+        "Edition",
+        "Impression",
+        "Qty per Carton",
+        "Initial Location",
+        "Created By",
+        "Status",
+        "Current Location",
+        "Audited",
       ],
-
-      dateColumn: 'Date Created',
-      bookColumn: 'Book Name',
-      bavColumn: 'BAV Code',
-      cartonColumn: 'QR Code',
-      countColumn: 'Qty per Carton',
-      highlightCreatedStatus: true
+      dateColumn: "Date Created",
+      bookColumn: "Book Name",
+      bavColumn: "BAV Code",
+      cartonColumn: "QR Code",
+      countColumn: "Qty per Carton",
+      highlightCreatedStatus: true,
     },
 
     challan_movement: {
-      label: 'Challan Movement',
-      expectedSheet: 'Challan Movement',
-
+      label: "Challan Movement",
+      expectedSheet: "Challan Movement",
       required: [
-        'Challan No',
-        'Challan Date',
-        'From',
-        'To',
-        'Created By',
-        'Carton No',
-        'Book Name',
-        'BAV Code',
-        'Qty',
-        'Status'
+        "Challan No",
+        "Challan Date",
+        "From",
+        "To",
+        "Created By",
+        "Carton No",
+        "Book Name",
+        "BAV Code",
+        "Qty",
+        "Status",
       ],
-
       aliases: {
-        'Challan Number': 'Challan No',
-        'Carton Number': 'Carton No',
-        'Book Title': 'Book Name'
+        "Challan Number": "Challan No",
+        "Carton Number": "Carton No",
+        "Book Title": "Book Name",
       },
-
       columns: [
-        'Challan No',
-        'Challan Date',
-        'From',
-        'To',
-        'Created By',
-        'Carton No',
-        'Book Name',
-        'BAV Code',
-        'Qty',
-        'Status',
-        'Received At',
-        'Received By'
+        "Challan No",
+        "Challan Date",
+        "From",
+        "To",
+        "Created By",
+        "Carton No",
+        "Book Name",
+        "BAV Code",
+        "Qty",
+        "Status",
+        "Received By",
       ],
-
-      dateColumn: 'Challan Date',
-      bookColumn: 'Book Name',
-      bavColumn: 'BAV Code',
-      cartonColumn: 'Carton No',
-      countColumn: 'Qty'
+      dateColumn: "Challan Date",
+      bookColumn: "Book Name",
+      bavColumn: "BAV Code",
+      cartonColumn: "Carton No",
+      countColumn: "Qty",
     },
 
     carton_movements: {
-      label: 'Carton Movements',
-      expectedSheet: 'Carton Movements',
-
+      label: "Carton Movements",
+      expectedSheet: "Carton Movements",
       required: [
-        'QR Code',
-        'Book Name',
-        'BAV Code',
-        'Move #',
-        'Type',
-        'Location',
-        'Scanned At',
-        'Scanned By'
+        "QR Code",
+        "Book Name",
+        "BAV Code",
+        "Move #",
+        "Type",
+        "Location",
+        "Scanned At",
+        "Scanned By",
       ],
-
       aliases: {
-        'Book Title': 'Book Name',
-        'Move No': 'Move #',
-        'Move Number': 'Move #',
-        'Movement No': 'Move #',
-        'Movement Number': 'Move #',
-        'Challan Number': 'Challan No'
+        "Book Title": "Book Name",
+        "Move No": "Move #",
+        "Move Number": "Move #",
+        "Movement No": "Move #",
+        "Movement Number": "Move #",
+        "Challan Number": "Challan No",
       },
-
       columns: [
-        'QR Code',
-        'Book Name',
-        'BAV Code',
-        'Move #',
-        'Type',
-        'Location',
-        'Scanned At',
-        'Scanned By',
-        'Challan No'
+        "QR Code",
+        "Book Name",
+        "BAV Code",
+        "Move #",
+        "Type",
+        "Location",
+        "Scanned At",
+        "Scanned By",
+        "Challan No",
       ],
-
-      dateColumn: 'Scanned At',
-      bookColumn: 'Book Name',
-      bavColumn: 'BAV Code',
-      cartonColumn: 'QR Code',
-      pivotMovements: true
-    }
+      dateColumn: "Scanned At",
+      bookColumn: "Book Name",
+      bavColumn: "BAV Code",
+      cartonColumn: "QR Code",
+      pivotMovements: true,
+    },
   };
 
   const PDF_HEADER_PEACH = [255, 226, 202];
@@ -195,7 +178,7 @@
     [220, 223, 247],
     [242, 217, 230],
     [217, 237, 245],
-    [232, 224, 207]
+    [232, 224, 207],
   ];
 
   const PDF_MOVE_TEXT_COLORS = [
@@ -206,26 +189,27 @@
     [138, 72, 31],
     [36, 95, 104],
     [109, 82, 32],
-    [75, 79, 143]
+    [75, 79, 143],
   ];
 
   function escapeHtml(value) {
-    return String(value ?? '').replace(
+    return String(value ?? "").replace(
       /[&<>'"]/g,
-      (character) => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;'
-      })[character]
+      (character) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          "'": "&#39;",
+          '"': "&quot;",
+        })[character],
     );
   }
 
   function normalizeText(value) {
-    return String(value ?? '')
+    return String(value ?? "")
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, ' ')
+      .replace(/[^a-z0-9]+/g, " ")
       .trim();
   }
 
@@ -234,36 +218,34 @@
       return true;
     }
 
-    const text = String(value)
-      .trim()
-      .toLowerCase();
+    const text = String(value).trim().toLowerCase();
 
     return [
-      '',
-      '-',
-      '--',
-      '—',
-      '–',
-      'n/a',
-      'na',
-      'null',
-      'none'
+      "",
+      "-",
+      "--",
+      "—",
+      "–",
+      "n/a",
+      "na",
+      "null",
+      "none",
     ].includes(text);
   }
 
   function normalizeCode(value) {
     if (isBlank(value)) {
-      return '';
+      return "";
     }
 
     return String(value)
       .toUpperCase()
-      .replace(/\s+/g, '')
+      .replace(/\s+/g, "")
       .trim();
   }
 
   function getCartonEndingNumber(value) {
-    const text = String(value ?? '').trim();
+    const text = String(value ?? "").trim();
     const match = text.match(/(\d+)\D*$/);
 
     if (!match) {
@@ -272,14 +254,12 @@
 
     const number = Number.parseInt(match[1], 10);
 
-    return Number.isFinite(number)
-      ? number
-      : null;
+    return Number.isFinite(number) ? number : null;
   }
 
   function compareCartonCodes(leftValue, rightValue) {
-    const left = String(leftValue ?? '').trim();
-    const right = String(rightValue ?? '').trim();
+    const left = String(leftValue ?? "").trim();
+    const right = String(rightValue ?? "").trim();
 
     if (!left && !right) {
       return 0;
@@ -293,18 +273,15 @@
       return -1;
     }
 
-    const leftNumber =
-      getCartonEndingNumber(left);
-
-    const rightNumber =
-      getCartonEndingNumber(right);
+    const leftNumber = getCartonEndingNumber(left);
+    const rightNumber = getCartonEndingNumber(right);
 
     const leftPrefix = left
-      .replace(/\d+\D*$/, '')
+      .replace(/\d+\D*$/, "")
       .toUpperCase();
 
     const rightPrefix = right
-      .replace(/\d+\D*$/, '')
+      .replace(/\d+\D*$/, "")
       .toUpperCase();
 
     const prefixComparison =
@@ -312,9 +289,9 @@
         rightPrefix,
         undefined,
         {
-          sensitivity: 'base',
-          numeric: true
-        }
+          sensitivity: "base",
+          numeric: true,
+        },
       );
 
     if (prefixComparison !== 0) {
@@ -333,9 +310,9 @@
       right,
       undefined,
       {
-        sensitivity: 'base',
-        numeric: true
-      }
+        sensitivity: "base",
+        numeric: true,
+      },
     );
   }
 
@@ -353,42 +330,40 @@
 
       state.unknownStatusClasses.set(
         normalized,
-        nextIndex
+        nextIndex,
       );
     }
 
-    return state.unknownStatusClasses.get(
-      normalized
-    );
+    return state.unknownStatusClasses.get(normalized);
   }
 
   function getCreatedCellClass(column, value) {
     const normalized = normalizeText(value);
 
-    if (column === 'Audited') {
-      if (normalized === 'yes') {
-        return 'audited-yes';
+    if (column === "Audited") {
+      if (normalized === "yes") {
+        return "audited-yes";
       }
 
-      if (normalized === 'no') {
-        return 'audited-no';
+      if (normalized === "no") {
+        return "audited-no";
       }
     }
 
-    if (column === 'Status') {
-      if (normalized === 'active') {
-        return 'status-active';
+    if (column === "Status") {
+      if (normalized === "active") {
+        return "status-active";
       }
 
-      if (normalized === 'consumed') {
-        return 'status-consumed';
+      if (normalized === "consumed") {
+        return "status-consumed";
       }
 
       if (
-        normalized === 'cancelled' ||
-        normalized === 'canceled'
+        normalized === "cancelled" ||
+        normalized === "canceled"
       ) {
-        return 'status-cancelled';
+        return "status-cancelled";
       }
 
       if (normalized) {
@@ -398,36 +373,36 @@
       }
     }
 
-    return '';
+    return "";
   }
 
   function getCreatedPdfColor(column, value) {
     const normalized = normalizeText(value);
 
-    if (column === 'Audited') {
-      if (normalized === 'yes') {
+    if (column === "Audited") {
+      if (normalized === "yes") {
         return PDF_AUDITED_YES;
       }
 
-      if (normalized === 'no') {
+      if (normalized === "no") {
         return PDF_AUDITED_NO;
       }
 
       return null;
     }
 
-    if (column === 'Status') {
-      if (normalized === 'active') {
+    if (column === "Status") {
+      if (normalized === "active") {
         return PDF_STATUS_ACTIVE;
       }
 
-      if (normalized === 'consumed') {
+      if (normalized === "consumed") {
         return PDF_STATUS_CONSUMED;
       }
 
       if (
-        normalized === 'cancelled' ||
-        normalized === 'canceled'
+        normalized === "cancelled" ||
+        normalized === "canceled"
       ) {
         return PDF_STATUS_CANCELLED;
       }
@@ -449,7 +424,7 @@
   function levenshtein(a, b) {
     const matrix = Array.from(
       { length: a.length + 1 },
-      () => Array(b.length + 1).fill(0)
+      () => Array(b.length + 1).fill(0),
     );
 
     for (let i = 0; i <= a.length; i += 1) {
@@ -470,7 +445,7 @@
               a[i - 1] === b[j - 1]
                 ? 0
                 : 1
-            )
+            ),
         );
       }
     }
@@ -486,38 +461,39 @@
       return 1;
     }
 
-    return 1 - (
+    return (
+      1 -
       levenshtein(left, right) /
-      Math.max(
-        left.length,
-        right.length,
-        1
-      )
+        Math.max(
+          left.length,
+          right.length,
+          1,
+        )
     );
   }
 
   function chooseSheet(
     sheetNames,
     expectedName,
-    isCsv
+    isCsv,
   ) {
     if (isCsv) {
       return {
         sheet: sheetNames[0],
-        exact: true
+        exact: true,
       };
     }
 
     const exact = sheetNames.find(
       (name) =>
         normalizeText(name) ===
-        normalizeText(expectedName)
+        normalizeText(expectedName),
     );
 
     if (exact) {
       return {
         sheet: exact,
-        exact: true
+        exact: true,
       };
     }
 
@@ -526,12 +502,12 @@
         sheet,
         score: similarity(
           sheet,
-          expectedName
-        )
+          expectedName,
+        ),
       }))
       .sort(
         (a, b) =>
-          b.score - a.score
+          b.score - a.score,
       );
 
     if (
@@ -540,25 +516,30 @@
     ) {
       return {
         ...ranked[0],
-        exact: false
+        exact: false,
       };
     }
 
     if (sheetNames.length === 1) {
       return {
         sheet: sheetNames[0],
-        exact: false
+        exact: false,
       };
     }
 
     throw new Error(
       `Could not find a worksheet close to “${expectedName}”. ` +
-      `Available sheets: ${sheetNames.join(', ')}`
+        `Available sheets: ${sheetNames.join(", ")}`,
     );
   }
 
-  function canonicalHeader(header, definition) {
-    const trimmed = String(header ?? '').trim();
+  function canonicalHeader(
+    header,
+    definition,
+  ) {
+    const trimmed = String(
+      header ?? "",
+    ).trim();
 
     if (definition.aliases[trimmed]) {
       return definition.aliases[trimmed];
@@ -567,13 +548,15 @@
     const known = [
       ...definition.required,
       ...definition.columns,
-      ...Object.keys(definition.aliases)
+      ...Object.keys(
+        definition.aliases,
+      ),
     ];
 
     const exactKnown = known.find(
       (candidate) =>
         normalizeText(candidate) ===
-        normalizeText(trimmed)
+        normalizeText(trimmed),
     );
 
     if (!exactKnown) {
@@ -587,7 +570,10 @@
   }
 
   function parseDate(value) {
-    if (value == null || value === '') {
+    if (
+      value == null ||
+      value === ""
+    ) {
       return null;
     }
 
@@ -599,7 +585,7 @@
     }
 
     if (
-      typeof value === 'number' &&
+      typeof value === "number" &&
       window.XLSX?.SSF
     ) {
       const parts =
@@ -612,7 +598,7 @@
           parts.d,
           parts.H,
           parts.M,
-          Math.floor(parts.S)
+          Math.floor(parts.S),
         );
       }
     }
@@ -620,15 +606,19 @@
     const text = String(value).trim();
 
     const normalDate = new Date(
-      text.replace(',', ' ')
+      text.replace(",", " "),
     );
 
-    if (!Number.isNaN(normalDate.getTime())) {
+    if (
+      !Number.isNaN(
+        normalDate.getTime(),
+      )
+    ) {
       return normalDate;
     }
 
     const match = text.match(
-      /^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})(?:[,\s]+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?)?$/i
+      /^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})(?:[,\s]+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?)?$/i,
     );
 
     if (!match) {
@@ -640,10 +630,10 @@
       day,
       month,
       year,
-      hour = '0',
-      minute = '0',
-      second = '0',
-      meridiem
+      hour = "0",
+      minute = "0",
+      second = "0",
+      meridiem,
     ] = match;
 
     year = Number(year);
@@ -658,14 +648,14 @@
         meridiem.toUpperCase();
 
       if (
-        upper === 'PM' &&
+        upper === "PM" &&
         hour < 12
       ) {
         hour += 12;
       }
 
       if (
-        upper === 'AM' &&
+        upper === "AM" &&
         hour === 12
       ) {
         hour = 0;
@@ -678,10 +668,12 @@
       Number(day),
       hour,
       Number(minute),
-      Number(second)
+      Number(second),
     );
 
-    return Number.isNaN(parsed.getTime())
+    return Number.isNaN(
+      parsed.getTime(),
+    )
       ? null
       : parsed;
   }
@@ -690,24 +682,32 @@
     const date = parseDate(value);
 
     if (!date) {
-      return '';
+      return "";
     }
 
     return [
       date.getFullYear(),
-      String(date.getMonth() + 1).padStart(2, '0'),
-      String(date.getDate()).padStart(2, '0')
-    ].join('-');
+      String(
+        date.getMonth() + 1,
+      ).padStart(2, "0"),
+      String(
+        date.getDate(),
+      ).padStart(2, "0"),
+    ].join("-");
   }
 
   function formatDateOnly(value) {
     if (!value) {
-      return '';
+      return "";
     }
 
-    if (/^\d{4}-\d{2}-\d{2}$/.test(String(value))) {
+    if (
+      /^\d{4}-\d{2}-\d{2}$/.test(
+        String(value),
+      )
+    ) {
       const [year, month, day] =
-        String(value).split('-');
+        String(value).split("-");
 
       return `${day}/${month}/${year}`;
     }
@@ -719,12 +719,12 @@
     }
 
     return new Intl.DateTimeFormat(
-      'en-GB',
+      "en-GB",
       {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      }
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      },
     ).format(date);
   }
 
@@ -733,33 +733,33 @@
 
     if (!date) {
       return value == null
-        ? ''
+        ? ""
         : String(value);
     }
 
     return new Intl.DateTimeFormat(
-      'en-GB',
+      "en-GB",
       {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      },
     ).format(date);
   }
 
   function formatCell(value, column) {
     if (isBlank(value)) {
-      return '';
+      return "";
     }
 
     if (
-      column === 'Date Created' ||
-      column === 'Challan Date' ||
-      column === 'Consumed On' ||
-      column === 'Scanned At' ||
-      column === 'Received At'
+      column === "Date Created" ||
+      column === "Challan Date" ||
+      column === "Consumed On" ||
+      column === "Scanned At" ||
+      column === "Received At"
     ) {
       return formatDateTime(value);
     }
@@ -767,7 +767,10 @@
     return String(value);
   }
 
-  function normalizeRows(rawRows, definition) {
+  function normalizeRows(
+    rawRows,
+    definition,
+  ) {
     return rawRows
       .map((rawRow) => {
         const normalizedRow = {};
@@ -777,49 +780,61 @@
             normalizedRow[
               canonicalHeader(
                 header,
-                definition
+                definition,
               )
             ] = value;
-          }
+          },
         );
 
         return normalizedRow;
       })
       .filter((row) =>
         Object.values(row).some(
-          (value) => !isBlank(value)
-        )
+          (value) => !isBlank(value),
+        ),
       );
   }
 
-  function validateColumns(rows, definition) {
+  function validateColumns(
+    rows,
+    definition,
+  ) {
     const available = new Set(
-      rows.flatMap((row) => Object.keys(row))
+      rows.flatMap((row) =>
+        Object.keys(row),
+      ),
     );
 
     const missing =
       definition.required.filter(
         (column) =>
-          !available.has(column)
+          !available.has(column),
       );
 
     if (missing.length) {
       throw new Error(
-        `Required columns are missing: ${missing.join(', ')}`
+        `Required columns are missing: ${missing.join(", ")}`,
       );
     }
   }
 
-  function groupRows(rows, definition) {
+  function groupRows(
+    rows,
+    definition,
+  ) {
     const groups = new Map();
 
     rows.forEach((row) => {
       const book = String(
-        row[definition.bookColumn] ?? ''
+        row[
+          definition.bookColumn
+        ] ?? "",
       ).trim();
 
       const bav = String(
-        row[definition.bavColumn] ?? ''
+        row[
+          definition.bavColumn
+        ] ?? "",
       ).trim();
 
       const normalizedBav =
@@ -837,7 +852,7 @@
           book,
           bav,
           rows: [],
-          cartons: new Set()
+          cartons: new Set(),
         });
       }
 
@@ -854,7 +869,9 @@
       group.rows.push(row);
 
       const carton = normalizeCode(
-        row[definition.cartonColumn]
+        row[
+          definition.cartonColumn
+        ],
       );
 
       if (carton) {
@@ -866,9 +883,13 @@
       group.rows.sort(
         (leftRow, rightRow) =>
           compareCartonCodes(
-            leftRow[definition.cartonColumn],
-            rightRow[definition.cartonColumn]
-          )
+            leftRow[
+              definition.cartonColumn
+            ],
+            rightRow[
+              definition.cartonColumn
+            ],
+          ),
       );
     });
 
@@ -878,26 +899,28 @@
           b.book,
           undefined,
           {
-            sensitivity: 'base',
-            numeric: true
-          }
+            sensitivity: "base",
+            numeric: true,
+          },
         ) ||
         a.bav.localeCompare(
           b.bav,
           undefined,
           {
-            sensitivity: 'base',
-            numeric: true
-          }
-        )
+            sensitivity: "base",
+            numeric: true,
+          },
+        ),
     );
   }
 
   function getNumericMoveNumber(value) {
     const number = Number.parseInt(
-      String(value ?? '')
-        .replace(/[^\d]/g, ''),
-      10
+      String(value ?? "").replace(
+        /[^\d]/g,
+        "",
+      ),
+      10,
     );
 
     return Number.isFinite(number)
@@ -908,7 +931,7 @@
   function movementSortValue(row) {
     const moveNumber =
       getNumericMoveNumber(
-        row['Move #']
+        row["Move #"],
       );
 
     if (moveNumber !== null) {
@@ -917,25 +940,30 @@
 
     return (
       parseDate(
-        row['Scanned At']
+        row["Scanned At"],
       )?.getTime() ??
       Number.MAX_SAFE_INTEGER
     );
   }
 
-  function movementHasMissingChallan(row) {
+  function movementHasMissingChallan(
+    row,
+  ) {
     return (
-      normalizeText(row.Type) === 'scan out' &&
-      isBlank(row['Challan No'])
+      normalizeText(row.Type) ===
+        "scan out" &&
+      isBlank(row["Challan No"])
     );
   }
 
-  function getDistinctChallans(movements) {
+  function getDistinctChallans(
+    movements,
+  ) {
     const challanMap = new Map();
 
     movements.forEach((movement) => {
       const original = String(
-        movement['Challan No'] ?? ''
+        movement["Challan No"] ?? "",
       ).trim();
 
       if (isBlank(original)) {
@@ -949,102 +977,119 @@
         return;
       }
 
-      if (!challanMap.has(normalized)) {
+      if (
+        !challanMap.has(normalized)
+      ) {
         challanMap.set(normalized, {
           value: original,
-          moves: []
+          moves: [],
         });
       }
 
       challanMap
         .get(normalized)
-        .moves
-        .push(movement.__moveNumber);
+        .moves.push(
+          movement.__moveNumber,
+        );
     });
 
     return [...challanMap.values()];
   }
 
-  function buildCartonChallanDisplay(carton) {
-    if (!carton.distinctChallans.length) {
-      return '';
+  function buildCartonChallanDisplay(
+    carton,
+  ) {
+    if (
+      !carton.distinctChallans
+        .length
+    ) {
+      return "";
     }
 
-    if (carton.distinctChallans.length === 1) {
-      return carton.distinctChallans[0].value;
+    if (
+      carton.distinctChallans
+        .length === 1
+    ) {
+      return carton
+        .distinctChallans[0].value;
     }
 
     return carton.distinctChallans
       .map((challan) => {
         const moves = [
-          ...new Set(challan.moves)
+          ...new Set(challan.moves),
         ]
           .sort((a, b) => a - b)
-          .map((move) => `Move ${move}`)
-          .join(', ');
+          .map(
+            (move) => `Move ${move}`,
+          )
+          .join(", ");
 
         return `${moves}: ${challan.value}`;
       })
-      .join(' | ');
+      .join(" | ");
   }
 
-  function buildCartonMovementSummary(rows) {
+  function buildCartonMovementSummary(
+    rows,
+  ) {
     const cartonMap = new Map();
 
-    rows.forEach((row, originalIndex) => {
-      const qrCode = String(
-        row['QR Code'] ?? ''
-      ).trim();
+    rows.forEach(
+      (row, originalIndex) => {
+        const qrCode = String(
+          row["QR Code"] ?? "",
+        ).trim();
 
-      const key =
-        normalizeCode(qrCode) ||
-        `blank-qr-${originalIndex}`;
+        const key =
+          normalizeCode(qrCode) ||
+          `blank-qr-${originalIndex}`;
 
-      if (!cartonMap.has(key)) {
-        cartonMap.set(key, {
-          qrCode,
+        if (!cartonMap.has(key)) {
+          cartonMap.set(key, {
+            qrCode,
+            book: String(
+              row["Book Name"] ?? "",
+            ).trim(),
+            bav: String(
+              row["BAV Code"] ?? "",
+            ).trim(),
+            movements: [],
+            validationMessages: [],
+          });
+        }
 
-          book: String(
-            row['Book Name'] ?? ''
-          ).trim(),
+        const carton =
+          cartonMap.get(key);
 
-          bav: String(
-            row['BAV Code'] ?? ''
-          ).trim(),
+        if (
+          !carton.book &&
+          !isBlank(row["Book Name"])
+        ) {
+          carton.book = String(
+            row["Book Name"],
+          ).trim();
+        }
 
-          movements: [],
-          validationMessages: []
+        if (
+          !carton.bav &&
+          !isBlank(row["BAV Code"])
+        ) {
+          carton.bav = String(
+            row["BAV Code"],
+          ).trim();
+        }
+
+        carton.movements.push({
+          ...row,
+          __originalIndex:
+            originalIndex,
         });
-      }
-
-      const carton = cartonMap.get(key);
-
-      if (
-        !carton.book &&
-        !isBlank(row['Book Name'])
-      ) {
-        carton.book = String(
-          row['Book Name']
-        ).trim();
-      }
-
-      if (
-        !carton.bav &&
-        !isBlank(row['BAV Code'])
-      ) {
-        carton.bav = String(
-          row['BAV Code']
-        ).trim();
-      }
-
-      carton.movements.push({
-        ...row,
-        __originalIndex: originalIndex
-      });
-    });
+      },
+    );
 
     const allCartons = [
-      ...cartonMap.values()
+      ...cartonMap.values(),
     ];
 
     allCartons.forEach((carton) => {
@@ -1053,7 +1098,7 @@
           movementSortValue(a) -
             movementSortValue(b) ||
           a.__originalIndex -
-            b.__originalIndex
+            b.__originalIndex,
       );
 
       const usedMoveNumbers =
@@ -1063,15 +1108,15 @@
         (movement) => {
           const moveNumber =
             getNumericMoveNumber(
-              movement['Move #']
+              movement["Move #"],
             );
 
           if (moveNumber !== null) {
             usedMoveNumbers.add(
-              moveNumber
+              moveNumber,
             );
           }
-        }
+        },
       );
 
       let nextMoveNumber = 1;
@@ -1081,13 +1126,13 @@
           (movement) => {
             let moveNumber =
               getNumericMoveNumber(
-                movement['Move #']
+                movement["Move #"],
               );
 
             if (moveNumber === null) {
               while (
                 usedMoveNumbers.has(
-                  nextMoveNumber
+                  nextMoveNumber,
                 )
               ) {
                 nextMoveNumber += 1;
@@ -1097,7 +1142,7 @@
                 nextMoveNumber;
 
               usedMoveNumbers.add(
-                nextMoveNumber
+                nextMoveNumber,
               );
 
               nextMoveNumber += 1;
@@ -1105,25 +1150,26 @@
 
             return {
               ...movement,
-              __moveNumber: moveNumber
+              __moveNumber:
+                moveNumber,
             };
-          }
+          },
         );
 
       carton.movements.sort(
         (a, b) =>
           a.__moveNumber -
-          b.__moveNumber
+          b.__moveNumber,
       );
 
       const missingMoves =
         carton.movements
           .filter(
-            movementHasMissingChallan
+            movementHasMissingChallan,
           )
           .map(
             (movement) =>
-              movement.__moveNumber
+              movement.__moveNumber,
           );
 
       carton.hasMissingChallan =
@@ -1131,41 +1177,40 @@
 
       if (missingMoves.length) {
         carton.validationMessages.push(
-          `Missing Challan No for Scan OUT: ${
-            missingMoves
-              .map(
-                (move) =>
-                  `Move ${move}`
-              )
-              .join(', ')
-          }`
+          `Missing Challan No for Scan OUT: ${missingMoves
+            .map(
+              (move) =>
+                `Move ${move}`,
+            )
+            .join(", ")}`,
         );
       }
 
       carton.distinctChallans =
         getDistinctChallans(
-          carton.movements
+          carton.movements,
         );
 
       carton.hasChallanMismatch =
-        carton.distinctChallans.length > 1;
+        carton.distinctChallans
+          .length > 1;
 
-      if (carton.hasChallanMismatch) {
+      if (
+        carton.hasChallanMismatch
+      ) {
         carton.validationMessages.push(
-          `Different Challan Nos found: ${
-            carton.distinctChallans
-              .map(
-                (challan) =>
-                  challan.value
-              )
-              .join(', ')
-          }`
+          `Different Challan Nos found: ${carton.distinctChallans
+            .map(
+              (challan) =>
+                challan.value,
+            )
+            .join(", ")}`,
         );
       }
 
       carton.challanDisplay =
         buildCartonChallanDisplay(
-          carton
+          carton,
         );
 
       carton.hasValidationProblem =
@@ -1173,64 +1218,55 @@
         carton.hasChallanMismatch;
     });
 
-    /*
-      IMPORTANT CHANGE:
-
-      Only keep QR Codes with more than one movement.
-
-      One movement:
-      - excluded from preview
-      - excluded from PDF
-      - excluded from counts
-      - excluded from warnings
-
-      Two or more movements:
-      - included normally
-    */
-    const cartons = allCartons.filter(
-      (carton) =>
-        carton.movements.length > 1
-    );
+    const cartons =
+      allCartons.filter(
+        (carton) =>
+          carton.movements.length > 1,
+      );
 
     const groupMap = new Map();
 
-    cartons.forEach((carton, index) => {
-      const normalizedBav =
-        normalizeCode(carton.bav);
+    cartons.forEach(
+      (carton, index) => {
+        const normalizedBav =
+          normalizeCode(carton.bav);
 
-      const normalizedBook =
-        normalizeText(carton.book);
+        const normalizedBook =
+          normalizeText(carton.book);
 
-      const key = normalizedBav
-        ? `bav|||${normalizedBav}`
-        : normalizedBook
-          ? `book|||${normalizedBook}`
-          : `unknown|||${index}`;
+        const key = normalizedBav
+          ? `bav|||${normalizedBav}`
+          : normalizedBook
+            ? `book|||${normalizedBook}`
+            : `unknown|||${index}`;
 
-      if (!groupMap.has(key)) {
-        groupMap.set(key, {
-          book: carton.book,
-          bav: carton.bav,
-          cartons: []
-        });
-      }
+        if (!groupMap.has(key)) {
+          groupMap.set(key, {
+            book: carton.book,
+            bav: carton.bav,
+            cartons: [],
+          });
+        }
 
-      groupMap
-        .get(key)
-        .cartons
-        .push(carton);
-    });
+        groupMap
+          .get(key)
+          .cartons.push(carton);
+      },
+    );
 
     const groups = [
-      ...groupMap.values()
+      ...groupMap.values(),
     ]
       .map((group) => {
         group.cartons.sort(
-          (leftCarton, rightCarton) =>
+          (
+            leftCarton,
+            rightCarton,
+          ) =>
             compareCartonCodes(
               leftCarton.qrCode,
-              rightCarton.qrCode
-            )
+              rightCarton.qrCode,
+            ),
         );
 
         return group;
@@ -1241,18 +1277,18 @@
             b.book,
             undefined,
             {
-              sensitivity: 'base',
-              numeric: true
-            }
+              sensitivity: "base",
+              numeric: true,
+            },
           ) ||
           a.bav.localeCompare(
             b.bav,
             undefined,
             {
-              sensitivity: 'base',
-              numeric: true
-            }
-          )
+              sensitivity: "base",
+              numeric: true,
+            },
+          ),
       );
 
     const maxMoveNumber =
@@ -1260,20 +1296,24 @@
         (maximum, carton) => {
           const cartonMaximum =
             carton.movements.reduce(
-              (currentMaximum, movement) =>
+              (
+                currentMaximum,
+                movement,
+              ) =>
                 Math.max(
                   currentMaximum,
-                  movement.__moveNumber || 0
+                  movement.__moveNumber ||
+                    0,
                 ),
-              0
+              0,
             );
 
           return Math.max(
             maximum,
-            cartonMaximum
+            cartonMaximum,
           );
         },
-        0
+        0,
       );
 
     return {
@@ -1281,26 +1321,31 @@
       groups,
       maxMoveNumber,
       excludedSingleMovementCount:
-        allCartons.length - cartons.length
+        allCartons.length -
+        cartons.length,
     };
   }
 
-  function buildMovementPathHtml(carton) {
+  function buildMovementPathHtml(
+    carton,
+  ) {
     return carton.movements
       .map((movement, index) => {
-        const location =
-          isBlank(movement.Location)
-            ? 'Unknown Location'
-            : String(
-                movement.Location
-              ).trim();
+        const location = isBlank(
+          movement.Location,
+        )
+          ? "Unknown Location"
+          : String(
+              movement.Location,
+            ).trim();
 
-        const type =
-          isBlank(movement.Type)
-            ? `Move ${movement.__moveNumber}`
-            : String(
-                movement.Type
-              ).trim();
+        const type = isBlank(
+          movement.Type,
+        )
+          ? `Move ${movement.__moveNumber}`
+          : String(
+              movement.Type,
+            ).trim();
 
         const colorNumber =
           getMoveColorIndex(index) + 1;
@@ -1324,100 +1369,106 @@
           <span class="movement-path-arrow">→</span>
         `;
       })
-      .join(' ');
+      .join(" ");
   }
 
-  function buildMovementPathText(carton) {
+  function buildMovementPathText(
+    carton,
+  ) {
     return carton.movements
       .map((movement) => {
-        const location =
-          isBlank(movement.Location)
-            ? 'Unknown Location'
-            : String(
-                movement.Location
-              ).trim();
+        const location = isBlank(
+          movement.Location,
+        )
+          ? "Unknown Location"
+          : String(
+              movement.Location,
+            ).trim();
 
-        const type =
-          isBlank(movement.Type)
-            ? `Move ${movement.__moveNumber}`
-            : String(
-                movement.Type
-              ).trim();
+        const type = isBlank(
+          movement.Type,
+        )
+          ? `Move ${movement.__moveNumber}`
+          : String(
+              movement.Type,
+            ).trim();
 
         return `${location} {${type}}`;
       })
-      .join(' -> ');
+      .join(" -> ");
   }
 
-  async function parseFile(file, reportType) {
+  async function parseFile(
+    file,
+    reportType,
+  ) {
     const definition =
       REPORTS[reportType];
 
     if (!definition) {
       throw new Error(
-        'Choose a valid report type.'
+        "Choose a valid report type.",
       );
     }
 
-    const extension =
-      file.name
-        .split('.')
-        .pop()
-        .toLowerCase();
+    const extension = file.name
+      .split(".")
+      .pop()
+      .toLowerCase();
 
     if (
-      ![
-        'csv',
-        'xlsx',
-        'xls'
-      ].includes(extension)
+      !["csv", "xlsx", "xls"].includes(
+        extension,
+      )
     ) {
       throw new Error(
-        'Only CSV, XLSX, and XLS files are supported.'
+        "Only CSV, XLSX, and XLS files are supported.",
       );
     }
 
     const workbook = XLSX.read(
       await file.arrayBuffer(),
       {
-        type: 'array',
+        type: "array",
         cellDates: true,
-        raw: true
-      }
+        raw: true,
+      },
     );
 
-    if (!workbook.SheetNames.length) {
+    if (
+      !workbook.SheetNames.length
+    ) {
       throw new Error(
-        'The file does not contain a readable worksheet.'
+        "The file does not contain a readable worksheet.",
       );
     }
 
     const match = chooseSheet(
       workbook.SheetNames,
       definition.expectedSheet,
-      extension === 'csv'
+      extension === "csv",
     );
 
     const rows = normalizeRows(
       XLSX.utils.sheet_to_json(
         workbook.Sheets[match.sheet],
         {
-          defval: '',
-          raw: true
-        }
+          defval: "",
+          raw: true,
+        },
       ),
-      definition
+      definition,
     );
 
     if (!rows.length) {
       throw new Error(
-        `The selected worksheet “${match.sheet}” is empty.`
+        `The selected worksheet “${match.sheet}” is empty.`,
       );
     }
 
     validateColumns(
       rows,
-      definition
+      definition,
     );
 
     const uniqueDates = [
@@ -1425,11 +1476,13 @@
         rows
           .map((row) =>
             dateOnlyKey(
-              row[definition.dateColumn]
-            )
+              row[
+                definition.dateColumn
+              ],
+            ),
           )
-          .filter(Boolean)
-      )
+          .filter(Boolean),
+      ),
     ].sort();
 
     const report = {
@@ -1438,23 +1491,20 @@
         definition.label,
       definition,
       filename: file.name,
-
       selectedSheet:
-        extension === 'csv'
-          ? 'CSV file'
+        extension === "csv"
+          ? "CSV file"
           : match.sheet,
-
       sheetNameWasExact:
         match.exact,
-
       rows,
-      uniqueDates
+      uniqueDates,
     };
 
     if (definition.pivotMovements) {
       const summary =
         buildCartonMovementSummary(
-          rows
+          rows,
         );
 
       report.movementCartons =
@@ -1472,53 +1522,51 @@
       report.missingChallanCount =
         summary.cartons.filter(
           (carton) =>
-            carton.hasMissingChallan
+            carton.hasMissingChallan,
         ).length;
 
       report.challanMismatchCount =
         summary.cartons.filter(
           (carton) =>
-            carton.hasChallanMismatch
+            carton.hasChallanMismatch,
         ).length;
     } else {
-      report.groups =
-        groupRows(
-          rows,
-          definition
-        );
+      report.groups = groupRows(
+        rows,
+        definition,
+      );
     }
 
     return report;
   }
 
   function visibleColumns(report) {
-    return report
-      .definition
-      .columns
-      .filter(
-        (column) =>
-          column !==
-          report.definition.dateColumn
-      );
+    return report.definition.columns.filter(
+      (column) =>
+        column !==
+        report.definition.dateColumn,
+    );
   }
 
-  function cartonMovementColumns(report) {
+  function cartonMovementColumns(
+    report,
+  ) {
     const columns = [
-      'QR Code',
-      'Book Name',
-      'BAV Code',
-      'Carton Count',
-      'Movement Path',
-      'Challan No'
+      "QR Code",
+      "Book Name",
+      "BAV Code",
+      "Carton Count",
+      "Movement Path",
+      "Challan No",
     ];
 
     if (
       report.movementCartons.some(
         (carton) =>
-          carton.hasValidationProblem
+          carton.hasValidationProblem,
       )
     ) {
-      columns.push('Validation');
+      columns.push("Validation");
     }
 
     return columns;
@@ -1526,142 +1574,129 @@
 
   function movementCellValue(
     carton,
-    column
+    column,
   ) {
     const values = {
-      'QR Code':
-        carton.qrCode,
-
-      'Book Name':
-        carton.book,
-
-      'BAV Code':
-        carton.bav,
-
-      'Carton Count':
-        '',
-
-      'Movement Path':
+      "QR Code": carton.qrCode,
+      "Book Name": carton.book,
+      "BAV Code": carton.bav,
+      "Carton Count": "",
+      "Movement Path":
         buildMovementPathText(
-          carton
+          carton,
         ),
-
-      'Challan No':
+      "Challan No":
         carton.challanDisplay,
-
       Validation:
-        carton.validationMessages
-          .join('; ')
+        carton.validationMessages.join(
+          "; ",
+        ),
     };
 
-    return values[column] ?? '';
+    return values[column] ?? "";
   }
 
-  function renderStandardReport(report) {
+  function renderStandardReport(
+    report,
+  ) {
     const columns =
       visibleColumns(report);
 
     const countColumnIndex =
       columns.indexOf(
-        report.definition.countColumn
+        report.definition.countColumn,
       );
 
-    const groupHtml =
-      report.groups
-        .map((group) => {
-          const rowsHtml =
-            group.rows
-              .map((row, rowIndex) => {
-                const cells =
-                  columns
-                    .map((column) => {
-                      const value =
-                        formatCell(
-                          row[column],
-                          column
-                        );
+    const groupHtml = report.groups
+      .map((group) => {
+        const rowsHtml = group.rows
+          .map((row, rowIndex) => {
+            const cells = columns
+              .map((column) => {
+                const value =
+                  formatCell(
+                    row[column],
+                    column,
+                  );
 
-                      const classes = [
-                        column ===
-                          report.definition
-                            .bookColumn &&
-                        rowIndex === 0
-                          ? 'book-cell-first'
-                          : '',
-
-                        report.definition
-                          .highlightCreatedStatus
-                          ? getCreatedCellClass(
-                              column,
-                              value
-                            )
-                          : '',
-
-                        value === ''
-                          ? 'empty-cell'
-                          : ''
-                      ]
-                        .filter(Boolean)
-                        .join(' ');
-
-                      return `
-                        <td class="${classes}">
-                          ${
-                            value === ''
-                              ? '—'
-                              : escapeHtml(
-                                  value
-                                )
-                          }
-                        </td>
-                      `;
-                    })
-                    .join('');
+                const classes = [
+                  column ===
+                    report.definition
+                      .bookColumn &&
+                  rowIndex === 0
+                    ? "book-cell-first"
+                    : "",
+                  report.definition
+                    .highlightCreatedStatus
+                    ? getCreatedCellClass(
+                        column,
+                        value,
+                      )
+                    : "",
+                  value === ""
+                    ? "empty-cell"
+                    : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ");
 
                 return `
-                  <tr class="detail-row">
-                    ${cells}
-                  </tr>
-                `;
-              })
-              .join('');
-
-          const count =
-            group.cartons.size ||
-            group.rows.length;
-
-          const countCells =
-            columns
-              .map(
-                (_, index) => `
-                  <td class="${
-                    index ===
-                    countColumnIndex
-                      ? 'group-count'
-                      : ''
-                  }">
+                  <td class="${classes}">
                     ${
-                      index ===
-                      countColumnIndex
-                        ? count.toLocaleString()
-                        : ''
+                      value === ""
+                        ? "—"
+                        : escapeHtml(
+                            value,
+                          )
                     }
                   </td>
-                `
-              )
-              .join('');
+                `;
+              })
+              .join("");
 
-          return `
-            <tbody class="report-group">
-              ${rowsHtml}
-
-              <tr class="group-count-row">
-                ${countCells}
+            return `
+              <tr class="detail-row">
+                ${cells}
               </tr>
-            </tbody>
-          `;
-        })
-        .join('');
+            `;
+          })
+          .join("");
+
+        const count =
+          group.cartons.size ||
+          group.rows.length;
+
+        const countCells = columns
+          .map(
+            (_, index) => `
+              <td class="${
+                index ===
+                countColumnIndex
+                  ? "group-count"
+                  : ""
+              }">
+                ${
+                  index ===
+                  countColumnIndex
+                    ? count.toLocaleString()
+                    : ""
+                }
+              </td>
+            `,
+          )
+          .join("");
+
+        return `
+          <tbody class="report-group">
+            ${rowsHtml}
+
+            <tr class="group-count-row">
+              ${countCells}
+            </tr>
+          </tbody>
+        `;
+      })
+      .join("");
 
     return `
       <table>
@@ -1670,9 +1705,9 @@
             ${columns
               .map(
                 (column) =>
-                  `<th>${escapeHtml(column)}</th>`
+                  `<th>${escapeHtml(column)}</th>`,
               )
-              .join('')}
+              .join("")}
           </tr>
         </thead>
 
@@ -1681,13 +1716,15 @@
     `;
   }
 
-  function renderCartonMovementReport(report) {
+  function renderCartonMovementReport(
+    report,
+  ) {
     const columns =
-      cartonMovementColumns(
-        report
-      );
+      cartonMovementColumns(report);
 
-    if (!report.movementGroups.length) {
+    if (
+      !report.movementGroups.length
+    ) {
       return `
         <div class="error">
           No cartons have more than one movement.
@@ -1697,96 +1734,105 @@
 
     const groupHtml =
       report.movementGroups
-        .map((group) => `
-          <tbody class="report-group">
+        .map(
+          (group) => `
+            <tbody class="report-group">
 
-            ${group.cartons
-              .map((carton, index) => `
-                <tr class="${
-                  carton.hasValidationProblem
-                    ? 'invalid-scanout-row'
-                    : ''
-                }">
+              ${group.cartons
+                .map(
+                  (
+                    carton,
+                    index,
+                  ) => `
+                    <tr class="${
+                      carton.hasValidationProblem
+                        ? "invalid-scanout-row"
+                        : ""
+                    }">
 
-                  ${columns
-                    .map((column) => {
-                      if (
-                        column ===
-                        'Movement Path'
-                      ) {
-                        return `
-                          <td class="movement-path-cell">
-                            <div class="movement-path">
-                              ${buildMovementPathHtml(carton)}
-                            </div>
-                          </td>
-                        `;
-                      }
-
-                      const value =
-                        movementCellValue(
-                          carton,
-                          column
-                        );
-
-                      const classes = [
-                        column ===
-                          'Book Name' &&
-                        index === 0
-                          ? 'book-cell-first'
-                          : '',
-
-                        column ===
-                          'Validation'
-                          ? 'validation-cell'
-                          : '',
-
-                        value === ''
-                          ? 'empty-cell'
-                          : ''
-                      ]
-                        .filter(Boolean)
-                        .join(' ');
-
-                      return `
-                        <td class="${classes}">
-                          ${
-                            value === ''
-                              ? '—'
-                              : escapeHtml(value)
+                      ${columns
+                        .map((column) => {
+                          if (
+                            column ===
+                            "Movement Path"
+                          ) {
+                            return `
+                              <td class="movement-path-cell">
+                                <div class="movement-path">
+                                  ${buildMovementPathHtml(
+                                    carton,
+                                  )}
+                                </div>
+                              </td>
+                            `;
                           }
-                        </td>
-                      `;
-                    })
-                    .join('')}
-                </tr>
-              `)
-              .join('')}
 
-            <tr class="group-count-row">
-              ${columns
-                .map((column) => `
-                  <td class="${
-                    column ===
-                    'Carton Count'
-                      ? 'group-count'
-                      : ''
-                  }">
-                    ${
-                      column ===
-                      'Carton Count'
-                        ? group.cartons
-                            .length
-                            .toLocaleString()
-                        : ''
-                    }
-                  </td>
-                `)
-                .join('')}
-            </tr>
-          </tbody>
-        `)
-        .join('');
+                          const value =
+                            movementCellValue(
+                              carton,
+                              column,
+                            );
+
+                          const classes = [
+                            column ===
+                              "Book Name" &&
+                            index === 0
+                              ? "book-cell-first"
+                              : "",
+                            column ===
+                            "Validation"
+                              ? "validation-cell"
+                              : "",
+                            value === ""
+                              ? "empty-cell"
+                              : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" ");
+
+                          return `
+                            <td class="${classes}">
+                              ${
+                                value === ""
+                                  ? "—"
+                                  : escapeHtml(
+                                      value,
+                                    )
+                              }
+                            </td>
+                          `;
+                        })
+                        .join("")}
+                    </tr>
+                  `,
+                )
+                .join("")}
+
+              <tr class="group-count-row">
+                ${columns
+                  .map(
+                    (column) => `
+                      <td class="${
+                        column ===
+                        "Carton Count"
+                          ? "group-count"
+                          : ""
+                      }">
+                        ${
+                          column ===
+                          "Carton Count"
+                            ? group.cartons.length.toLocaleString()
+                            : ""
+                        }
+                      </td>
+                    `,
+                  )
+                  .join("")}
+              </tr>
+            </tbody>
+          `,
+        )
+        .join("");
 
     return `
       <table class="movement-report-table">
@@ -1795,9 +1841,9 @@
             ${columns
               .map(
                 (column) =>
-                  `<th>${escapeHtml(column)}</th>`
+                  `<th>${escapeHtml(column)}</th>`,
               )
-              .join('')}
+              .join("")}
           </tr>
         </thead>
 
@@ -1811,11 +1857,11 @@
 
     if (
       report.selectedSheet !==
-        'CSV file' &&
+        "CSV file" &&
       !report.sheetNameWasExact
     ) {
       warnings.push(
-        `The worksheet “${report.selectedSheet}” was used because it closely matches “${report.definition.expectedSheet}”.`
+        `The worksheet “${report.selectedSheet}” was used because it closely matches “${report.definition.expectedSheet}”.`,
       );
     }
 
@@ -1823,37 +1869,39 @@
       report.uniqueDates.length > 1
     ) {
       warnings.push(
-        `More than one date is present in this file: ${
-          report.uniqueDates
-            .map(formatDateOnly)
-            .join(', ')
-        }`
+        `More than one date is present in this file: ${report.uniqueDates
+          .map(formatDateOnly)
+          .join(", ")}`,
       );
     }
 
     if (
-      report.definition.pivotMovements &&
+      report.definition
+        .pivotMovements &&
       report.missingChallanCount > 0
     ) {
       warnings.push(
         `${report.missingChallanCount} carton row${
-          report.missingChallanCount === 1
-            ? ''
-            : 's'
-        } marked red because Scan OUT has no Challan No.`
+          report.missingChallanCount ===
+          1
+            ? ""
+            : "s"
+        } marked red because Scan OUT has no Challan No.`,
       );
     }
 
     if (
-      report.definition.pivotMovements &&
+      report.definition
+        .pivotMovements &&
       report.challanMismatchCount > 0
     ) {
       warnings.push(
         `${report.challanMismatchCount} carton row${
-          report.challanMismatchCount === 1
-            ? ''
-            : 's'
-        } marked red because the movements contain different Challan Nos.`
+          report.challanMismatchCount ===
+          1
+            ? ""
+            : "s"
+        } marked red because the movements contain different Challan Nos.`,
       );
     }
 
@@ -1861,95 +1909,105 @@
   }
 
   function renderPreview(report) {
-    $('#previewSection')
-      .classList
-      .remove('hidden');
+    $("#previewSection")
+      .classList.remove("hidden");
 
-    $('#previewTitle').textContent =
+    $("#previewTitle").textContent =
       `${report.reportLabel} Report`;
 
     let previewMeta =
       `${report.filename} · Source: ${report.selectedSheet}`;
 
-    if (report.definition.pivotMovements) {
+    if (
+      report.definition
+        .pivotMovements
+    ) {
       previewMeta +=
         ` · ${report.movementCartons.length} cartons with multiple movements`;
 
       if (
-        report.excludedSingleMovementCount > 0
+        report.excludedSingleMovementCount >
+        0
       ) {
         previewMeta +=
           ` · ${report.excludedSingleMovementCount} single-movement carton${
-            report.excludedSingleMovementCount === 1
-              ? ''
-              : 's'
+            report.excludedSingleMovementCount ===
+            1
+              ? ""
+              : "s"
           } skipped`;
       }
     }
 
-    $('#previewMeta').textContent =
+    $("#previewMeta").textContent =
       previewMeta;
 
-    $('#reportDate').textContent =
+    $("#reportDate").textContent =
       report.uniqueDates.length === 1
         ? `Date: ${formatDateOnly(
-            report.uniqueDates[0]
+            report.uniqueDates[0],
           )}`
-        : '';
+        : "";
 
     const warnings =
       buildWarnings(report);
 
-    $('#warnings').innerHTML =
+    $("#warnings").innerHTML =
       warnings.length
         ? warnings
             .map(
               (warning) => `
                 <div class="warning">
-                  ⚠ ${escapeHtml(warning)}
+                  ⚠ ${escapeHtml(
+                    warning,
+                  )}
                 </div>
-              `
+              `,
             )
-            .join('')
-        : '';
+            .join("")
+        : "";
 
-    $('#reportPanel').innerHTML =
+    $("#reportPanel").innerHTML =
       report.definition.pivotMovements
-        ? renderCartonMovementReport(report)
+        ? renderCartonMovementReport(
+            report,
+          )
         : renderStandardReport(report);
 
     window.scrollTo({
       top:
-        $('#previewSection').offsetTop - 20,
-      behavior: 'smooth'
+        $("#previewSection").offsetTop -
+        20,
+      behavior: "smooth",
     });
   }
 
   function addPdfHeader(pdf, report) {
     pdf.setFont(
-      'helvetica',
-      'bold'
+      "helvetica",
+      "bold",
     );
 
-    pdf.setFontSize(15);
+    pdf.setFontSize(20);
+    pdf.setTextColor(0, 0, 0);
 
     pdf.text(
       `${report.reportLabel} Report`,
       40,
-      33
+      33,
     );
 
     if (
       report.uniqueDates.length === 1
     ) {
-      pdf.setFontSize(9);
+      pdf.setFontSize(12);
 
       pdf.text(
         `Date: ${formatDateOnly(
-          report.uniqueDates[0]
+          report.uniqueDates[0],
         )}`,
         40,
-        49
+        49,
       );
 
       return 62;
@@ -1958,12 +2016,12 @@
     if (
       report.uniqueDates.length > 1
     ) {
-      pdf.setFontSize(9);
+      pdf.setFontSize(12);
 
       pdf.text(
-        'Multiple dates present',
+        "Multiple dates present",
         40,
-        49
+        49,
       );
 
       return 62;
@@ -1980,20 +2038,17 @@
       pdf.internal.pageSize.getHeight();
 
     pdf.setFont(
-      'helvetica',
-      'normal'
+      "helvetica",
+      "normal",
     );
 
-    pdf.setFontSize(8);
-
+    pdf.setFontSize(10);
     pdf.setTextColor(0, 0, 0);
 
     pdf.text(
-      `Page ${
-        pdf.internal.getNumberOfPages()
-      }`,
+      `Page ${pdf.internal.getNumberOfPages()}`,
       pageWidth - 65,
-      pageHeight - 10
+      pageHeight - 10,
     );
   }
 
@@ -2001,7 +2056,7 @@
     pdf,
     startX,
     centerY,
-    arrowWidth = 16
+    arrowWidth = 16,
   ) {
     const endX =
       startX + arrowWidth;
@@ -2015,31 +2070,31 @@
       startX,
       centerY,
       endX,
-      centerY
+      centerY,
     );
 
     pdf.line(
       endX,
       centerY,
       endX - headSize,
-      centerY - headSize
+      centerY - headSize,
     );
 
     pdf.line(
       endX,
       centerY,
       endX - headSize,
-      centerY + headSize
+      centerY + headSize,
     );
   }
 
   function drawColoredMovementPath(
     pdf,
     cell,
-    carton
+    carton,
   ) {
-    const paddingX = 5;
-    const paddingTop = 9;
+    const paddingX = 7;
+    const paddingTop = 15;
 
     const startX =
       cell.x + paddingX;
@@ -2049,37 +2104,39 @@
       cell.width -
       paddingX;
 
-    const fontSize = 6.8;
-    const lineHeight = 10;
-    const arrowWidth = 18;
-    const gap = 4;
+    const fontSize = 12.8;
+    const lineHeight = 18;
+    const arrowWidth = 25;
+    const gap = 7;
 
     let cursorX = startX;
     let cursorY =
       cell.y + paddingTop;
 
     pdf.setFont(
-      'helvetica',
-      'bold'
+      "helvetica",
+      "bold",
     );
 
     pdf.setFontSize(fontSize);
 
     carton.movements.forEach(
       (movement, index) => {
-        const location =
-          isBlank(movement.Location)
-            ? 'Unknown Location'
-            : String(
-                movement.Location
-              ).trim();
+        const location = isBlank(
+          movement.Location,
+        )
+          ? "Unknown Location"
+          : String(
+              movement.Location,
+            ).trim();
 
-        const type =
-          isBlank(movement.Type)
-            ? `Move ${movement.__moveNumber}`
-            : String(
-                movement.Type
-              ).trim();
+        const type = isBlank(
+          movement.Type,
+        )
+          ? `Move ${movement.__moveNumber}`
+          : String(
+              movement.Type,
+            ).trim();
 
         const text =
           `${location} {${type}}`;
@@ -2118,13 +2175,13 @@
         pdf.setTextColor(
           color[0],
           color[1],
-          color[2]
+          color[2],
         );
 
         pdf.text(
           text,
           cursorX,
-          cursorY
+          cursorY,
         );
 
         cursorX += textWidth;
@@ -2135,14 +2192,14 @@
           drawVectorArrow(
             pdf,
             cursorX,
-            cursorY - 2,
-            arrowWidth
+            cursorY - 3,
+            arrowWidth,
           );
 
           cursorX +=
             arrowWidth + gap;
         }
-      }
+      },
     );
 
     pdf.setTextColor(0, 0, 0);
@@ -2152,9 +2209,11 @@
     pdf,
     data,
     rowMeta,
-    columns
+    columns,
   ) {
-    if (data.section !== 'body') {
+    if (
+      data.section !== "body"
+    ) {
       return;
     }
 
@@ -2171,35 +2230,71 @@
     const height = data.cell.height;
 
     pdf.setDrawColor(0, 0, 0);
-    pdf.setLineWidth(0.9);
+    pdf.setLineWidth(0.45);
+
+    pdf.line(
+      x,
+      y,
+      x + width,
+      y,
+    );
+
+    pdf.line(
+      x,
+      y + height,
+      x + width,
+      y + height,
+    );
+
+    pdf.line(
+      x,
+      y,
+      x,
+      y + height,
+    );
+
+    pdf.line(
+      x + width,
+      y,
+      x + width,
+      y + height,
+    );
 
     if (
-      meta.type === 'detail' &&
+      meta.type === "detail" &&
       meta.isFirst
     ) {
+      pdf.setLineWidth(1.35);
+
       pdf.line(
         x,
         y,
         x + width,
-        y
+        y,
       );
     }
 
-    if (meta.type === 'count') {
+    if (meta.type === "count") {
+      pdf.setLineWidth(1.35);
+
       pdf.line(
         x,
         y + height,
         x + width,
-        y + height
+        y + height,
       );
     }
 
-    if (data.column.index === 0) {
+    if (
+      data.column.index === 0
+    ) {
+      pdf.setLineWidth(1.05);
+
       pdf.line(
         x,
         y,
         x,
-        y + height
+        y + height,
       );
     }
 
@@ -2207,117 +2302,324 @@
       data.column.index ===
       columns.length - 1
     ) {
+      pdf.setLineWidth(1.05);
+
       pdf.line(
         x + width,
         y,
         x + width,
-        y + height
+        y + height,
       );
     }
   }
 
-  function standardPdfColumnWidths(columns) {
+  function standardPdfColumnWidths(
+    report,
+    columns,
+    pageWidth,
+  ) {
     const widths = {};
-    const available = 760;
-    const base =
-      available / columns.length;
 
-    columns.forEach((column, index) => {
-      let width = base;
+    const profiles = {
+      cartons_consumed: {
+        "QR Code": 220,
+        "Book Title": 360,
+        "BAV Code": 195,
+        Qty: 85,
+        "Consumed By": 125,
+        "Last Location": 130,
+      },
 
-      if (/Book/.test(column)) {
-        width *= 1.45;
-      }
+      cartons_created: {
+        "QR Code": 155,
+        "Book Name": 195,
+        "BAV Code": 120,
+        Edition: 72,
+        Impression: 82,
+        "Qty per Carton": 90,
+        "Initial Location": 120,
+        "Created By": 82,
+        Status: 82,
+        "Current Location": 130,
+        Audited: 75,
+      },
 
-      if (
-        /QR Code|Carton No|Challan No/.test(
-          column
-        )
-      ) {
-        width *= 1.25;
-      }
+      challan_movement: {
+        "Challan No": 140,
+        From: 82,
+        To: 82,
+        "Created By": 62,
+        "Carton No": 150,
+        "Book Name": 205,
+        "BAV Code": 130,
+        Qty: 58,
+        Status: 78,
+        "Received By": 90,
+      },
+    };
 
-      if (
-        /Qty|Status|Audited/.test(column)
-      ) {
-        width *= 0.75;
-      }
+    const profile =
+      profiles[report.reportType] ||
+      {};
 
-      widths[index] = {
-        cellWidth: Math.max(
-          42,
-          Math.min(135, width)
-        )
-      };
-    });
+    const availableWidth =
+      pageWidth - 48;
+
+    const requestedWidths =
+      columns.map(
+        (column) =>
+          profile[column] || 100,
+      );
+
+    const requestedTotal =
+      requestedWidths.reduce(
+        (total, width) =>
+          total + width,
+        0,
+      );
+
+    const scale =
+      availableWidth /
+      requestedTotal;
+
+    columns.forEach(
+      (column, index) => {
+        widths[index] = {
+          cellWidth:
+            requestedWidths[index] *
+            scale,
+        };
+      },
+    );
 
     return widths;
   }
 
-  function movementPdfColumnWidths(columns) {
+  function standardPdfFontSize(
+    report,
+  ) {
+    if (
+      report.reportType ===
+      "cartons_consumed"
+    ) {
+      return 15.4;
+    }
+
+    if (
+      report.reportType ===
+      "challan_movement"
+    ) {
+      return 13.2;
+    }
+
+    return 11.8;
+  }
+
+  function movementPdfColumnWidths(
+    columns,
+    pageWidth,
+  ) {
     const widths = {};
 
-    columns.forEach((column, index) => {
-      let width = 90;
+    const marginLeft = 18;
+    const marginRight = 18;
 
-      if (column === 'QR Code') {
-        width = 110;
-      } else if (
-        column === 'Book Name'
-      ) {
-        width = 115;
-      } else if (
-        column === 'BAV Code'
-      ) {
-        width = 90;
-      } else if (
-        column === 'Carton Count'
-      ) {
-        width = 55;
-      } else if (
-        column === 'Movement Path'
-      ) {
-        width = 455;
-      } else if (
-        column === 'Challan No'
-      ) {
-        width = 125;
-      } else if (
-        column === 'Validation'
-      ) {
-        width = 150;
-      }
+    const availableWidth =
+      pageWidth -
+      marginLeft -
+      marginRight;
 
-      widths[index] = {
-        cellWidth: width
-      };
-    });
+    const preferredFixedWidths = {
+      "QR Code": 160,
+      "Book Name": 195,
+      "BAV Code": 128,
+      "Carton Count": 88,
+      "Challan No": 165,
+      Validation: 205,
+    };
+
+    const minimumMovementPathWidth =
+      430;
+
+    const fixedColumns =
+      columns.filter(
+        (column) =>
+          column !== "Movement Path",
+      );
+
+    const preferredFixedTotal =
+      fixedColumns.reduce(
+        (total, column) =>
+          total +
+          (
+            preferredFixedWidths[
+              column
+            ] || 100
+          ),
+        0,
+      );
+
+    const maximumFixedTotal =
+      availableWidth -
+      minimumMovementPathWidth;
+
+    const fixedScale =
+      preferredFixedTotal >
+      maximumFixedTotal
+        ? maximumFixedTotal /
+          preferredFixedTotal
+        : 1;
+
+    let actualFixedTotal = 0;
+
+    columns.forEach(
+      (column, index) => {
+        if (
+          column === "Movement Path"
+        ) {
+          return;
+        }
+
+        const width =
+          (
+            preferredFixedWidths[
+              column
+            ] || 100
+          ) * fixedScale;
+
+        widths[index] = {
+          cellWidth: width,
+        };
+
+        actualFixedTotal += width;
+      },
+    );
+
+    const movementPathIndex =
+      columns.indexOf(
+        "Movement Path",
+      );
+
+    widths[movementPathIndex] = {
+      cellWidth:
+        availableWidth -
+        actualFixedTotal,
+    };
 
     return widths;
+  }
+
+  function getMovementPdfPageWidth(
+    report,
+  ) {
+    const hasValidation =
+      report.movementCartons.some(
+        (carton) =>
+          carton.hasValidationProblem,
+      );
+
+    const baseWidth = hasValidation
+      ? 1420
+      : 1191;
+
+    const extraMoves = Math.max(
+      0,
+      report.maxMoveNumber - 3,
+    );
+
+    return Math.min(
+      2200,
+      baseWidth +
+        extraMoves * 150,
+    );
+  }
+
+  function estimateMovementLines(
+    pdf,
+    carton,
+    availableWidth,
+  ) {
+    pdf.setFont(
+      "helvetica",
+      "bold",
+    );
+
+    pdf.setFontSize(12.8);
+
+    const arrowSpace = 39;
+
+    let currentWidth = 0;
+    let lines = 1;
+
+    carton.movements.forEach(
+      (movement, index) => {
+        const location = isBlank(
+          movement.Location,
+        )
+          ? "Unknown Location"
+          : String(
+              movement.Location,
+            ).trim();
+
+        const type = isBlank(
+          movement.Type,
+        )
+          ? `Move ${movement.__moveNumber}`
+          : String(
+              movement.Type,
+            ).trim();
+
+        const itemWidth =
+          pdf.getTextWidth(
+            `${location} {${type}}`,
+          ) +
+          (
+            index <
+            carton.movements.length - 1
+              ? arrowSpace
+              : 0
+          );
+
+        if (
+          currentWidth > 0 &&
+          currentWidth + itemWidth >
+            availableWidth
+        ) {
+          lines += 1;
+          currentWidth = itemWidth;
+        } else {
+          currentWidth += itemWidth;
+        }
+      },
+    );
+
+    return lines;
   }
 
   function downloadStandardPdf(report) {
     const { jsPDF } =
       window.jspdf;
 
-    const pdf =
-      new jsPDF({
-        orientation: 'landscape',
-        unit: 'pt',
-        format: 'a4'
-      });
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "pt",
+      format: "a3",
+    });
+
+    const pageWidth =
+      pdf.internal.pageSize.getWidth();
 
     const columns =
       visibleColumns(report);
 
     const countColumnIndex =
       columns.indexOf(
-        report.definition.countColumn
+        report.definition.countColumn,
       );
 
     const bookColumnIndex =
       columns.indexOf(
-        report.definition.bookColumn
+        report.definition.bookColumn,
       );
 
     const body = [];
@@ -2332,94 +2634,102 @@
                 (column) =>
                   formatCell(
                     row[column],
-                    column
-                  ) || ''
-              )
+                    column,
+                  ) || "",
+              ),
             );
 
             rowMeta.push({
-              type: 'detail',
+              type: "detail",
               groupIndex,
               isFirst:
                 rowIndex === 0,
-              row
+              row,
             });
-          }
+          },
         );
 
         body.push(
           columns.map(
             (_, index) =>
-              index === countColumnIndex
+              index ===
+              countColumnIndex
                 ? String(
                     group.cartons.size ||
-                    group.rows.length
+                      group.rows.length,
                   )
-                : ''
-          )
+                : "",
+          ),
         );
 
         rowMeta.push({
-          type: 'count',
+          type: "count",
           groupIndex,
           isFirst: false,
-          row: null
+          row: null,
         });
-      }
+      },
     );
 
     pdf.autoTable({
-      startY:
-        addPdfHeader(
-          pdf,
-          report
-        ),
+      startY: addPdfHeader(
+        pdf,
+        report,
+      ),
 
       head: [columns],
       body,
-      theme: 'grid',
+      theme: "grid",
 
       margin: {
         left: 24,
         right: 24,
-        bottom: 24
+        bottom: 24,
       },
 
       styles: {
-        font: 'helvetica',
-        fontStyle: 'normal',
-
+        font: "helvetica",
+        fontStyle: "normal",
         fontSize:
-          columns.length >= 10
-            ? 6.2
-            : 7.2,
-
-        lineColor: [190, 190, 190],
-        lineWidth: 0.25,
-        cellPadding: 2.3,
-        overflow: 'linebreak',
-        valign: 'middle'
+          standardPdfFontSize(report),
+        lineColor: [0, 0, 0],
+        lineWidth: 0.4,
+        cellPadding: {
+          top: 3.6,
+          right: 3,
+          bottom: 3.6,
+          left: 3,
+        },
+        overflow: "linebreak",
+        valign: "middle",
+        textColor: [0, 0, 0],
+        minCellHeight: 31,
       },
 
       headStyles: {
         fillColor:
           PDF_HEADER_PEACH,
-
         textColor: [0, 0, 0],
-        fontStyle: 'bold',
-        halign: 'center',
-        lineWidth: 0.8,
-        lineColor: [0, 0, 0]
+        fontStyle: "bold",
+        fontSize:
+          standardPdfFontSize(
+            report,
+          ) + 0.8,
+        halign: "center",
+        lineWidth: 0.9,
+        lineColor: [0, 0, 0],
       },
 
       columnStyles:
         standardPdfColumnWidths(
-          columns
+          report,
+          columns,
+          pageWidth,
         ),
 
       didParseCell(data) {
         if (
-          data.section !== 'body'
+          data.section !== "body"
         ) {
           return;
         }
@@ -2432,20 +2742,26 @@
         }
 
         data.cell.styles.fontStyle =
-          'normal';
+          "normal";
+
+        data.cell.styles.textColor =
+          [0, 0, 0];
 
         if (
-          meta.type === 'detail' &&
+          meta.type === "detail" &&
           meta.isFirst &&
           data.column.index ===
             bookColumnIndex
         ) {
           data.cell.styles.fontStyle =
-            'bold';
+            "bold";
+
+          data.cell.styles.textColor =
+            [0, 0, 0];
         }
 
         if (
-          meta.type === 'detail' &&
+          meta.type === "detail" &&
           report.definition
             .highlightCreatedStatus
         ) {
@@ -2455,7 +2771,7 @@
           const color =
             getCreatedPdfColor(
               column,
-              meta.row?.[column]
+              meta.row?.[column],
             );
 
           if (color) {
@@ -2464,7 +2780,9 @@
           }
         }
 
-        if (meta.type === 'count') {
+        if (
+          meta.type === "count"
+        ) {
           data.cell.styles.fillColor =
             data.column.index ===
             countColumnIndex
@@ -2476,10 +2794,10 @@
             countColumnIndex
           ) {
             data.cell.styles.fontStyle =
-              'bold';
+              "bold";
 
             data.cell.styles.halign =
-              'center';
+              "center";
           }
         }
       },
@@ -2489,29 +2807,31 @@
           pdf,
           data,
           rowMeta,
-          columns
+          columns,
         );
       },
 
       didDrawPage() {
         addPdfPageNumber(pdf);
-      }
+      },
     });
 
     pdf.save(
-      `${
-        report.reportLabel.replace(
-          /[^a-z0-9]+/gi,
-          '_'
-        )
-      }_Report.pdf`
+      `${report.reportLabel.replace(
+        /[^a-z0-9]+/gi,
+        "_",
+      )}_Report.pdf`,
     );
   }
 
-  function downloadCartonMovementPdf(report) {
-    if (!report.movementCartons.length) {
+  function downloadCartonMovementPdf(
+    report,
+  ) {
+    if (
+      !report.movementCartons.length
+    ) {
       alert(
-        'No cartons have more than one movement, so there is nothing to include in the PDF.'
+        "No cartons have more than one movement, so there is nothing to include in the PDF.",
       );
 
       return;
@@ -2520,39 +2840,55 @@
     const { jsPDF } =
       window.jspdf;
 
-    const pdf =
-      new jsPDF({
-        orientation: 'landscape',
-        unit: 'pt',
-        format: 'a3'
-      });
+    const requestedPageWidth =
+      getMovementPdfPageWidth(
+        report,
+      );
+
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "pt",
+      format: [
+        requestedPageWidth,
+        842,
+      ],
+    });
+
+    const actualPageWidth =
+      pdf.internal.pageSize.getWidth();
 
     const columns =
       cartonMovementColumns(report);
 
+    const columnStyles =
+      movementPdfColumnWidths(
+        columns,
+        actualPageWidth,
+      );
+
     const movementPathColumnIndex =
       columns.indexOf(
-        'Movement Path'
+        "Movement Path",
       );
 
     const countColumnIndex =
       columns.indexOf(
-        'Carton Count'
+        "Carton Count",
       );
 
     const bookColumnIndex =
       columns.indexOf(
-        'Book Name'
+        "Book Name",
       );
 
     const validationColumnIndex =
       columns.indexOf(
-        'Validation'
+        "Validation",
       );
 
     const challanColumnIndex =
       columns.indexOf(
-        'Challan No'
+        "Challan No",
       );
 
     const body = [];
@@ -2561,113 +2897,112 @@
     report.movementGroups.forEach(
       (group, groupIndex) => {
         group.cartons.forEach(
-          (carton, cartonIndex) => {
+          (
+            carton,
+            cartonIndex,
+          ) => {
             body.push(
               columns.map(
                 (column) =>
                   column ===
-                  'Movement Path'
-                    ? ''
+                  "Movement Path"
+                    ? ""
                     : movementCellValue(
                         carton,
-                        column
-                      )
-              )
+                        column,
+                      ),
+              ),
             );
 
             rowMeta.push({
-              type: 'detail',
+              type: "detail",
               groupIndex,
-
               isFirst:
                 cartonIndex === 0,
-
               carton,
-
               invalid:
                 carton.hasValidationProblem,
-
               challanMismatch:
-                carton.hasChallanMismatch
+                carton.hasChallanMismatch,
             });
-          }
+          },
         );
 
         body.push(
           columns.map(
             (column) =>
               column ===
-              'Carton Count'
+              "Carton Count"
                 ? String(
-                    group.cartons.length
+                    group.cartons.length,
                   )
-                : ''
-          )
+                : "",
+          ),
         );
 
         rowMeta.push({
-          type: 'count',
+          type: "count",
           groupIndex,
           isFirst: false,
           carton: null,
           invalid: false,
-          challanMismatch: false
+          challanMismatch: false,
         });
-      }
+      },
     );
 
     pdf.autoTable({
-      startY:
-        addPdfHeader(
-          pdf,
-          report
-        ),
+      startY: addPdfHeader(
+        pdf,
+        report,
+      ),
 
       head: [columns],
       body,
-      theme: 'grid',
+      theme: "grid",
 
       horizontalPageBreak: false,
 
       margin: {
         left: 18,
         right: 18,
-        bottom: 24
+        bottom: 24,
       },
 
       styles: {
-        font: 'helvetica',
-        fontStyle: 'normal',
-        fontSize: 7,
-        cellPadding: 3,
-        lineWidth: 0.22,
-
-        lineColor: [195, 195, 195],
+        font: "helvetica",
+        fontStyle: "normal",
+        fontSize: 12.6,
+        cellPadding: {
+          top: 4.4,
+          right: 4,
+          bottom: 4.4,
+          left: 4,
+        },
+        lineWidth: 0.4,
+        lineColor: [0, 0, 0],
         textColor: [0, 0, 0],
-        overflow: 'linebreak',
-        valign: 'middle',
-        minCellHeight: 25
+        overflow: "linebreak",
+        valign: "middle",
+        minCellHeight: 35,
       },
 
       headStyles: {
         fillColor:
           PDF_HEADER_PEACH,
-
         textColor: [0, 0, 0],
-        fontStyle: 'bold',
-        halign: 'center',
-        lineWidth: 0.8,
-        lineColor: [0, 0, 0]
+        fontStyle: "bold",
+        fontSize: 13.6,
+        halign: "center",
+        lineWidth: 0.9,
+        lineColor: [0, 0, 0],
       },
 
-      columnStyles:
-        movementPdfColumnWidths(
-          columns
-        ),
+      columnStyles,
 
       didParseCell(data) {
         if (
-          data.section !== 'body'
+          data.section !== "body"
         ) {
           return;
         }
@@ -2679,45 +3014,54 @@
           return;
         }
 
+        data.cell.styles.textColor =
+          [0, 0, 0];
+
         if (
-          meta.type === 'detail' &&
+          meta.type === "detail" &&
           data.column.index ===
             movementPathColumnIndex
         ) {
           data.cell.text = [];
 
+          const movementPathWidth =
+            columnStyles[
+              movementPathColumnIndex
+            ].cellWidth;
+
           const estimatedLines =
-            Math.max(
-              1,
-              Math.ceil(
-                meta.carton
-                  .movements
-                  .length / 3
-              )
+            estimateMovementLines(
+              pdf,
+              meta.carton,
+              movementPathWidth - 14,
             );
 
           data.cell.styles.minCellHeight =
-            14 +
-            estimatedLines * 11;
+            Math.max(
+              36,
+              16 +
+                estimatedLines * 18,
+            );
         }
 
         if (
-          meta.type === 'detail' &&
+          meta.type === "detail" &&
           meta.invalid
         ) {
           data.cell.styles.fillColor =
             [255, 224, 224];
 
           if (
-            validationColumnIndex !== -1 &&
+            validationColumnIndex !==
+              -1 &&
             data.column.index ===
               validationColumnIndex
           ) {
             data.cell.styles.textColor =
-              [150, 0, 0];
+              [0, 0, 0];
 
             data.cell.styles.fontStyle =
-              'bold';
+              "bold";
           }
 
           if (
@@ -2726,24 +3070,29 @@
               challanColumnIndex
           ) {
             data.cell.styles.textColor =
-              [150, 0, 0];
+              [0, 0, 0];
 
             data.cell.styles.fontStyle =
-              'bold';
+              "bold";
           }
         }
 
         if (
-          meta.type === 'detail' &&
+          meta.type === "detail" &&
           meta.isFirst &&
           data.column.index ===
             bookColumnIndex
         ) {
           data.cell.styles.fontStyle =
-            'bold';
+            "bold";
+
+          data.cell.styles.textColor =
+            [0, 0, 0];
         }
 
-        if (meta.type === 'count') {
+        if (
+          meta.type === "count"
+        ) {
           data.cell.styles.fillColor =
             data.column.index ===
             countColumnIndex
@@ -2755,22 +3104,22 @@
             countColumnIndex
           ) {
             data.cell.styles.fontStyle =
-              'bold';
+              "bold";
 
             data.cell.styles.halign =
-              'center';
+              "center";
           }
         }
       },
 
       didDrawCell(data) {
         const meta =
-          data.section === 'body'
+          data.section === "body"
             ? rowMeta[data.row.index]
             : null;
 
         if (
-          meta?.type === 'detail' &&
+          meta?.type === "detail" &&
           data.column.index ===
             movementPathColumnIndex &&
           meta.carton
@@ -2778,7 +3127,7 @@
           drawColoredMovementPath(
             pdf,
             data.cell,
-            meta.carton
+            meta.carton,
           );
         }
 
@@ -2786,17 +3135,17 @@
           pdf,
           data,
           rowMeta,
-          columns
+          columns,
         );
       },
 
       didDrawPage() {
         addPdfPageNumber(pdf);
-      }
+      },
     });
 
     pdf.save(
-      'Carton_Movements_Report.pdf'
+      "Carton_Movements_Report.pdf",
     );
   }
 
@@ -2810,94 +3159,91 @@
         .pivotMovements
     ) {
       downloadCartonMovementPdf(
-        state.report
+        state.report,
       );
     } else {
       downloadStandardPdf(
-        state.report
+        state.report,
       );
     }
   }
 
-  $('#uploadForm')
-    .addEventListener(
-      'submit',
-      async (event) => {
-        event.preventDefault();
+  $("#uploadForm").addEventListener(
+    "submit",
+    async (event) => {
+      event.preventDefault();
 
-        const file =
-          $('#fileInput').files[0];
+      const file =
+        $("#fileInput").files[0];
 
-        const reportType =
-          $('#reportType').value;
+      const reportType =
+        $("#reportType").value;
 
-        const submitButton =
-          event.submitter;
+      const submitButton =
+        event.submitter;
 
-        if (!file || !reportType) {
-          $('#message').innerHTML = `
-            <div class="error">
-              Choose a report type and a file.
-            </div>
-          `;
+      if (!file || !reportType) {
+        $("#message").innerHTML = `
+          <div class="error">
+            Choose a report type and a file.
+          </div>
+        `;
 
-          return;
-        }
-
-        try {
-          submitButton.disabled = true;
-
-          submitButton.textContent =
-            'Reading file…';
-
-          $('#message').innerHTML = '';
-
-          state
-            .unknownStatusClasses
-            .clear();
-
-          state.report =
-            await parseFile(
-              file,
-              reportType
-            );
-
-          renderPreview(
-            state.report
-          );
-        } catch (error) {
-          state.report = null;
-
-          $('#previewSection')
-            .classList
-            .add('hidden');
-
-          $('#message').innerHTML = `
-            <div class="error">
-              ${escapeHtml(
-                error.message ||
-                'The file could not be processed.'
-              )}
-            </div>
-          `;
-        } finally {
-          submitButton.disabled = false;
-
-          submitButton.textContent =
-            'Validate & Preview';
-        }
+        return;
       }
-    );
 
-  $('#pdfBtn')
-    .addEventListener(
-      'click',
-      downloadPdf
-    );
+      try {
+        submitButton.disabled = true;
 
-  $('#printBtn')
-    .addEventListener(
-      'click',
-      () => window.print()
+        submitButton.textContent =
+          "Reading file…";
+
+        $("#message").innerHTML = "";
+
+        state.unknownStatusClasses.clear();
+
+        state.report =
+          await parseFile(
+            file,
+            reportType,
+          );
+
+        renderPreview(state.report);
+      } catch (error) {
+        state.report = null;
+
+        $("#previewSection")
+          .classList.add("hidden");
+
+        $("#message").innerHTML = `
+          <div class="error">
+            ${escapeHtml(
+              error.message ||
+                "The file could not be processed.",
+            )}
+          </div>
+        `;
+      } finally {
+        submitButton.disabled = false;
+
+        submitButton.textContent =
+          "Validate & Preview";
+      }
+    },
+  );
+
+  $("#pdfBtn").addEventListener(
+    "click",
+    downloadPdf,
+  );
+
+  const printButton =
+    $("#printBtn");
+
+  if (printButton) {
+    printButton.addEventListener(
+      "click",
+      () => window.print(),
     );
+  }
 })();
